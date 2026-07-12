@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://aesbackend.vercel.com/api',
+  apiUrl: 'https://aesbackend-sigma.vercel.app/api',
 };
