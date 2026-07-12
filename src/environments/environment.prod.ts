@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://aesbackend.netlify.app/api',
+  apiUrl: 'https://aesbackend.vercel.com/api',
 };
