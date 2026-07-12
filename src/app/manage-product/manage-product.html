@@ -1,0 +1,136 @@
+<div class="content p-6 max-w-7xl mx-auto space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+        <div>
+            <h2 class="text-2xl font-extrabold text-slate-900">Manage Product</h2>
+            <p class="text-sm text-slate-500">Add, edit, or remove menu products.</p>
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left: Form -->
+        <div class="rounded-3xl bg-white border border-slate-100 p-6 shadow-sm self-start">
+            <h3 class="text-lg font-bold text-slate-900 mb-4">{{ productObj.id ? 'Edit Product' : 'Add Product' }}</h3>
+            <form #productForm="ngForm" (ngSubmit)="handleSubmit()" class="space-y-4">
+                <!-- Name -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Product Name</label>
+                    <input type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 focus:border-amber-500 focus:outline-none" name="name" 
+                        [(ngModel)]="productObj.name" required placeholder="e.g. Cold Coffee">
+                </div>
+
+                <!-- Category selection -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Category</label>
+                    <select class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 focus:border-amber-500 focus:outline-none bg-white font-medium" name="categoryId"
+                        [(ngModel)]="productObj.categoryId" required>
+                        <option value="" disabled selected>Select Category</option>
+                        <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+                    </select>
+                </div>
+
+                <!-- Price -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Price ($)</label>
+                    <input type="number" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 focus:border-amber-500 focus:outline-none font-medium" name="price" 
+                        [(ngModel)]="productObj.price" required min="0.01" step="0.01" placeholder="e.g. 5.99">
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Description</label>
+                    <textarea class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 focus:border-amber-500 focus:outline-none h-20" name="description" 
+                        [(ngModel)]="productObj.description" required placeholder="e.g. Creamy coffee blend served chilled..."></textarea>
+                </div>
+
+                <!-- Image URL -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Image URL (Optional)</label>
+                    <input type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 focus:border-amber-500 focus:outline-none font-medium" name="imageUrl" 
+                        [(ngModel)]="productObj.imageUrl" placeholder="e.g. https://example.com/image.jpg">
+                </div>
+
+                <!-- Availability Toggle -->
+                <div class="flex items-center gap-3 py-2">
+                    <input type="checkbox" id="isAvailable" class="h-5 w-5 rounded border-slate-300 text-amber-600 focus:ring-amber-500 accent-amber-500 cursor-pointer" name="isAvailable" 
+                        [(ngModel)]="productObj.isAvailable">
+                    <label for="isAvailable" class="text-sm font-semibold text-slate-700 select-none cursor-pointer">Available for Order</label>
+                </div>
+
+                <div class="space-y-2 pt-2">
+                    <button type="submit" class="w-full inline-flex items-center justify-center rounded-2xl bg-amber-500 px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-950 shadow-lg shadow-amber-500/10 transition hover:bg-amber-400 hover:shadow-xl active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" [disabled]="productForm.invalid || submitted">
+                        {{ submitted ? (productObj.id ? 'Updating...' : 'Adding...') : (productObj.id ? 'Save Changes' : 'Submit') }}
+                    </button>
+                    <button type="button" class="w-full inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-600 transition hover:bg-slate-50 active:scale-95" (click)="resetForm()" *ngIf="productObj.id">
+                        Cancel Edit
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Right: List -->
+        <div class="lg:col-span-2 rounded-3xl bg-white border border-slate-100 p-6 shadow-sm">
+            <h3 class="text-lg font-bold text-slate-900 mb-4">Product List</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-700">
+                    <thead>
+                        <tr class="border-b border-slate-100 text-xs font-bold uppercase tracking-wider text-slate-400">
+                            <th class="pb-3 pr-4 font-semibold">Product</th>
+                            <th class="pb-3 pr-4 font-semibold">Category</th>
+                            <th class="pb-3 pr-4 font-semibold">Price</th>
+                            <th class="pb-3 pr-4 font-semibold">Availability</th>
+                            <th class="pb-3 pr-4 font-semibold text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        <tr *ngFor="let product of tableData; let i = index" class="group transition duration-150 hover:bg-slate-50/50">
+                            <td class="py-4 pr-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="h-10 w-10 flex-shrink-0 rounded-xl overflow-hidden bg-slate-100 border border-slate-100">
+                                        <img *ngIf="product.imageUrl" [src]="product.imageUrl" alt="Product Image" class="h-full w-full object-cover">
+                                        <!-- Fallback Icon if no imageUrl -->
+                                        <div *ngIf="!product.imageUrl" class="h-full w-full flex items-center justify-center text-slate-400 bg-amber-50 text-amber-600 font-bold text-sm">
+                                            {{ product.name.charAt(0).toUpperCase() }}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-900">{{ product.name }}</h4>
+                                        <p class="text-xs text-slate-400 line-clamp-1 max-w-[200px]">{{ product.description }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-4 pr-4 font-medium text-slate-600">{{ product.categoryName }}</td>
+                            <td class="py-4 pr-4 font-bold text-slate-900">${{ product.price | number:'1.2-2' }}</td>
+                            <td class="py-4 pr-4">
+                                <span *ngIf="product.isAvailable === 1 || product.isAvailable === true || product.status === 'true'" class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold leading-5 text-emerald-700">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                    Available
+                                </span>
+                                <span *ngIf="!(product.isAvailable === 1 || product.isAvailable === true || product.status === 'true')" class="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold leading-5 text-rose-700">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span>
+                                    Unavailable
+                                </span>
+                            </td>
+                            <td class="py-4 pr-4 text-right space-x-2 whitespace-nowrap">
+                                <button class="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" (click)="editProduct(product)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-3.5 w-3.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.83 20.04a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                                    </svg>
+                                    Edit
+                                </button>
+                                <button class="inline-flex items-center gap-1 rounded-xl border border-rose-100 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-100/50" (click)="deleteProduct(product.id)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-3.5 w-3.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                    </svg>
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                        <tr *ngIf="tableData.length === 0">
+                            <td colspan="5" class="py-8 text-center text-slate-400 text-sm">No products found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

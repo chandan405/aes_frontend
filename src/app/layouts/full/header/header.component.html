@@ -1,0 +1,112 @@
+<div class="flex items-center gap-6">
+  <!-- Search Bar -->
+  <div class="relative hidden max-w-xs sm:block">
+    <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-5 w-5 text-slate-400">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.602 10.602Z" />
+      </svg>
+    </span>
+    <input type="text" placeholder="Search operations..." class="h-10 w-64 rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-500/20" />
+  </div>
+
+  <!-- Notification Bell -->
+  <div class="relative group">
+    <button class="relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 active:scale-95">
+      <span class="sr-only">View notifications</span>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-5 w-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+      </svg>
+      <!-- Pulsing Notification Dot -->
+      <span class="absolute top-2.5 right-2.5 flex h-2 w-2">
+        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75"></span>
+        <span class="relative inline-flex h-2 w-2 rounded-full bg-amber-500"></span>
+      </span>
+    </button>
+
+    <!-- Simple Hover Notification Panel -->
+    <div class="absolute right-0 mt-2 w-80 scale-95 opacity-0 pointer-events-none origin-top-right rounded-2xl border border-slate-100 bg-white p-4 shadow-xl transition-all duration-200 group-hover:scale-100 group-hover:opacity-100 group-hover:pointer-events-auto z-50">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <h3 class="text-sm font-semibold text-slate-800">Notifications</h3>
+        <span class="rounded bg-amber-50 px-1.5 py-0.5 text-[10px] font-bold text-amber-700">3 New</span>
+      </div>
+      <div class="mt-2 space-y-3">
+        <div class="flex gap-3 text-xs leading-5">
+          <span class="mt-1 flex h-2 w-2 shrink-0 rounded-full bg-amber-500"></span>
+          <div>
+            <p class="font-semibold text-slate-800">New Order #4829</p>
+            <p class="text-slate-400">1x Espresso, 2x Chocolate Cake - Just now</p>
+          </div>
+        </div>
+        <div class="flex gap-3 text-xs leading-5 border-t border-slate-50 pt-2">
+          <span class="mt-1 flex h-2 w-2 shrink-0 rounded-full bg-emerald-500"></span>
+          <div>
+            <p class="font-semibold text-slate-800">Table 4 Cleared</p>
+            <p class="text-slate-400">Marked as ready for seating - 12 mins ago</p>
+          </div>
+        </div>
+        <div class="flex gap-3 text-xs leading-5 border-t border-slate-50 pt-2">
+          <span class="mt-1 flex h-2 w-2 shrink-0 rounded-full bg-blue-500"></span>
+          <div>
+            <p class="font-semibold text-slate-800">Inventory Alert</p>
+            <p class="text-slate-400">Whole milk stock is running low (< 10%) - 1 hr ago</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Button -->
+  <div class="relative">
+    <a routerLink="/cafe/order-items" routerLinkActive="border-amber-500 text-amber-700" class="relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 active:scale-95">
+      <span class="sr-only">View Cart</span>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-5 w-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+      </svg>
+      <!-- Cart Count Badge -->
+      <span *ngIf="cartService.getCartCount() > 0" class="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-slate-950 animate-bounce">
+        {{ cartService.getCartCount() }}
+      </span>
+    </a>
+  </div>
+
+  <!-- User Profile Section -->
+  <div class="relative flex items-center gap-3 border-l border-slate-200 pl-6">
+    <ng-container *ngIf="userService.isLoggedIn(); else loggedOutTpl">
+      <div class="hidden text-right md:block">
+        <p class="text-sm font-bold text-slate-800 leading-tight">{{ userService.currentUser()?.name || 'Sarah Jenkins' }}</p>
+        <p class="text-xs font-semibold text-slate-400">Authorized Operator</p>
+      </div>
+      <button (click)="toggleDropdown()" class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-600 font-bold text-slate-950 shadow-md shadow-amber-500/20 transition-transform hover:scale-105 active:scale-95">
+        {{ (userService.currentUser()?.name ? userService.currentUser().name.slice(0, 2) : 'SJ') | uppercase }}
+      </button>
+
+      <!-- Dropdown Menu -->
+      <div *ngIf="showDropdown" class="absolute right-0 top-14 w-52 rounded-2xl border border-slate-100 bg-white p-2 shadow-xl animate-in fade-in slide-in-from-top-3 duration-200 z-50">
+        <div class="px-4 py-2 border-b border-slate-50 mb-1">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Operator Panel</p>
+        </div>
+        <a routerLink="/" (click)="closeDropdown()" class="flex w-full items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-950 transition duration-150">
+          <svg class="h-6 w-4.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+          </svg>
+          Go to Website
+        </a>
+        <button (click)="logout()" class="flex w-full items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-rose-600 hover:bg-rose-50/50 hover:text-rose-700 transition duration-150 text-left">
+          <svg class="h-6 w-4.5 text-rose-400" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+          </svg>
+          Log Out
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-template #loggedOutTpl>
+      <button (click)="userService.showAuthModal.set(true); userService.authModalTab.set('login')" class="inline-flex items-center gap-1.5 rounded-xl border border-amber-500 bg-amber-500 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-950 transition hover:bg-amber-400 active:scale-95">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+        </svg>
+        Sign In
+      </button>
+    </ng-template>
+  </div>
+</div>

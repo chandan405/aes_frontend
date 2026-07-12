@@ -1,0 +1,153 @@
+<div class="content p-6 max-w-7xl mx-auto space-y-6">
+  <div>
+    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Checkout</h2>
+    <p class="text-sm text-slate-500">Choose your payment option and place order.</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    
+    <!-- Left Column: Payment Form (2/3 width) -->
+    <div class="lg:col-span-2 rounded-3xl bg-white border border-slate-100 p-6 shadow-sm space-y-6">
+      
+      <!-- Option Selector Tabs -->
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Payment Method</label>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <button type="button" (click)="setPaymentMethod('Credit Card')"
+            [class.border-amber-500]="paymentMethod === 'Credit Card'"
+            [class.bg-amber-50]="paymentMethod === 'Credit Card'"
+            [class.text-amber-700]="paymentMethod === 'Credit Card'"
+            class="flex flex-col items-center justify-center gap-2 rounded-2xl border border-slate-200 px-4 py-4 text-xs font-bold text-slate-600 transition hover:bg-slate-50">
+            <span>💳</span>
+            <span>Credit Card</span>
+          </button>
+          
+          <button type="button" (click)="setPaymentMethod('Debit Card')"
+            [class.border-amber-500]="paymentMethod === 'Debit Card'"
+            [class.bg-amber-50]="paymentMethod === 'Debit Card'"
+            [class.text-amber-700]="paymentMethod === 'Debit Card'"
+            class="flex flex-col items-center justify-center gap-2 rounded-2xl border border-slate-200 px-4 py-4 text-xs font-bold text-slate-600 transition hover:bg-slate-50">
+            <span>💳</span>
+            <span>Debit Card</span>
+          </button>
+          
+          <button type="button" (click)="setPaymentMethod('UPI')"
+            [class.border-amber-500]="paymentMethod === 'UPI'"
+            [class.bg-amber-50]="paymentMethod === 'UPI'"
+            [class.text-amber-700]="paymentMethod === 'UPI'"
+            class="flex flex-col items-center justify-center gap-2 rounded-2xl border border-slate-200 px-4 py-4 text-xs font-bold text-slate-600 transition hover:bg-slate-50">
+            <span>⚡</span>
+            <span>UPI ID</span>
+          </button>
+          
+          <button type="button" (click)="setPaymentMethod('Cash On Delivery')"
+            [class.border-amber-500]="paymentMethod === 'Cash On Delivery'"
+            [class.bg-amber-50]="paymentMethod === 'Cash On Delivery'"
+            [class.text-amber-700]="paymentMethod === 'Cash On Delivery'"
+            class="flex flex-col items-center justify-center gap-2 rounded-2xl border border-slate-200 px-4 py-4 text-xs font-bold text-slate-600 transition hover:bg-slate-50">
+            <span>💵</span>
+            <span>Cash / COD</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Payment Form Fields -->
+      <form #paymentForm="ngForm" (ngSubmit)="handlePayment()" class="space-y-4">
+        <!-- Contact Number (Always Required) -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Contact Number</label>
+          <input type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 focus:border-amber-500 focus:outline-none" name="contactNumber" 
+            [(ngModel)]="contactNumber" required placeholder="e.g. 9876543210" pattern="^[0-9]{10}$">
+        </div>
+
+        <!-- Dynamic inputs for Credit/Debit Cards -->
+        <div *ngIf="paymentMethod === 'Credit Card' || paymentMethod === 'Debit Card'" class="space-y-4 animate-fadeIn">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Cardholder Name</label>
+            <input type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 focus:border-amber-500 focus:outline-none" name="cardName" 
+              [(ngModel)]="cardName" required placeholder="e.g. Chandan Kumar">
+          </div>
+          
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Card Number</label>
+            <input type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 focus:border-amber-500 focus:outline-none" name="cardNumber" 
+              [(ngModel)]="cardNumber" required placeholder="e.g. 4111 2222 3333 4444" pattern="^[0-9\\s]{16,19}$">
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Expiry Date</label>
+              <input type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 focus:border-amber-500 focus:outline-none" name="expiryDate" 
+                [(ngModel)]="expiryDate" required placeholder="MM/YY" pattern="^(0[1-9]|1[0-2])\\/?([0-9]{2})$">
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">CVV</label>
+              <input type="password" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 focus:border-amber-500 focus:outline-none" name="cvv" 
+                [(ngModel)]="cvv" required placeholder="e.g. 123" pattern="^[0-9]{3,4}$">
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic inputs for UPI -->
+        <div *ngIf="paymentMethod === 'UPI'" class="space-y-4 animate-fadeIn">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">UPI ID</label>
+            <input type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 focus:border-amber-500 focus:outline-none" name="upiId" 
+              [(ngModel)]="upiId" required placeholder="e.g. chandan@upi" pattern="^[a-zA-Z0-9.\\-_]{2,256}@[a-zA-Z]{2,64}$">
+          </div>
+        </div>
+
+        <!-- COD Info -->
+        <div *ngIf="paymentMethod === 'Cash On Delivery'" class="rounded-2xl bg-amber-50/50 border border-amber-100 p-4 animate-fadeIn">
+          <p class="text-xs text-amber-700 leading-relaxed">
+            <strong>Cash On Delivery Selected:</strong> Please pay the amount to the server once the order is served at your table.
+          </p>
+        </div>
+
+        <div class="pt-4">
+          <button type="submit"
+            [disabled]="paymentForm.invalid || submitted"
+            class="w-full inline-flex items-center justify-center rounded-2xl bg-amber-500 px-5 py-4 text-xs font-bold uppercase tracking-wider text-slate-950 shadow-lg shadow-amber-500/10 transition hover:bg-amber-400 hover:shadow-xl active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+            {{ submitted ? 'Processing Order...' : 'Pay & Place Order' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Right Column: Cart Totals Review (1/3 width) -->
+    <div class="rounded-3xl bg-white border border-slate-100 p-6 shadow-sm self-start space-y-6">
+      <h3 class="text-lg font-bold text-slate-900 border-b border-slate-50 pb-3">Order Summary</h3>
+      
+      <div class="max-h-60 overflow-y-auto space-y-3">
+        <div *ngFor="let item of cartService.getCartItems()" class="flex items-center justify-between text-xs font-semibold text-slate-600">
+          <span class="truncate max-w-[140px]">{{ item.name }} x{{ item.quantity }}</span>
+          <span>₹{{ (item.price * item.quantity).toFixed(2) }}</span>
+        </div>
+      </div>
+      
+      <hr class="border-slate-50" />
+
+      <div class="space-y-2 text-xs font-bold text-slate-500">
+        <div class="flex justify-between">
+          <span>Subtotal</span>
+          <span>₹{{ cartService.getCartSubtotal().toFixed(2) }}</span>
+        </div>
+        <div class="flex justify-between text-[11px] text-slate-400">
+          <span>GST (5%)</span>
+          <span>₹{{ (cartService.getCartSubtotal() * 0.05 | number:'1.2-2') }}</span>
+        </div>
+        <div class="flex justify-between text-[11px] text-slate-400">
+          <span>Delivery Charge</span>
+          <span>₹30.00</span>
+        </div>
+        
+        <hr class="border-slate-50 my-1" />
+        
+        <div class="flex justify-between text-sm font-black text-slate-900">
+          <span>Grand Total</span>
+          <span class="text-emerald-600">₹{{ grandTotal.toFixed(2) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

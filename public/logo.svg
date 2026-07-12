@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 80" width="240" height="80">
+  <defs>
+    <linearGradient id="coffeeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+  </defs>
+  <g transform="translate(10, 10)">
+    <!-- Coffee Cup Outline & Steam -->
+    <path d="M18 12c-5.5 0-10 4.5-10 10s4.5 10 10 10h12c5.5 0 10-4.5 10-10v-2c0-1.1-.9-2-2-2h-2c0-3.3-2.7-6-6-6h-2z" fill="url(#coffeeGrad)" />
+    <path d="M40 20c2.2 0 4 1.8 4 4v2c0 2.2-1.8 4-4 4h-2v-10h2z" fill="#b45309" />
+    <path d="M12 22h24v2H12zm2 4h20v2H14z" fill="#78350f" opacity="0.3" />
+    <!-- Steam Lines -->
+    <path d="M18 6c0-2 2-2 2-4m6 4c0-2 2-2 2-4m-12 4c0-2 2-2 2-4" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+  </g>
+  <!-- Text -->
+  <text x="75" y="42" font-family="'Outfit', sans-serif" font-weight="800" font-size="24" fill="#0f172a" letter-spacing="1">AURA</text>
+  <text x="75" y="58" font-family="'Outfit', sans-serif" font-weight="500" font-size="14" fill="#f59e0b" letter-spacing="3">C A F E</text>
+</svg>

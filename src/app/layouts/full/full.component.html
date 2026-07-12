@@ -1,0 +1,55 @@
+<div class="min-h-screen bg-slate-50/60 text-slate-900">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Desktop Sidebar -->
+    <aside class="hidden w-72 shrink-0 border-r border-slate-200 bg-white py-6 md:block">
+      <div class="mb-8 flex items-center gap-3 px-6">
+        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-500 text-slate-950 font-black text-2xl shadow-lg shadow-amber-500/20">☕</div>
+        <div>
+          <h2 class="text-lg font-extrabold tracking-tight text-slate-900">Aura Cafe</h2>
+          <p class="text-xs font-semibold uppercase tracking-wider text-amber-600">Management</p>
+        </div>
+      </div>
+      <app-sidebar></app-sidebar>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex flex-1 flex-col overflow-hidden">
+      <!-- Top Header -->
+      <header class="sticky top-0 z-20 flex h-20 items-center justify-between border-b border-slate-200/80 bg-white/80 px-6 backdrop-blur-md">
+        <div class="flex items-center gap-4">
+          <button (click)="toggleSidebar()" class="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 active:scale-95 md:hidden">
+            <span class="sr-only">Open sidebar</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-6 w-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <div>
+            <h1 class="text-sm font-bold text-slate-800 md:text-base">Cafe Management System</h1>
+            <p class="hidden text-xs text-slate-400 md:block">Real-time cafe operations overview</p>
+          </div>
+        </div>
+        <app-header></app-header>
+      </header>
+
+      <!-- Main Body -->
+      <main class="flex-1 overflow-y-auto p-6 md:p-8">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </div>
+
+  <!-- Mobile Sidebar Overlay -->
+  <div *ngIf="sidebarOpen" class="fixed inset-0 z-30 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300 md:hidden" (click)="toggleSidebar()"></div>
+  
+  <!-- Mobile Sidebar -->
+  <aside *ngIf="sidebarOpen" class="fixed inset-y-0 left-0 z-40 w-72 overflow-y-auto bg-white py-6 shadow-2xl transition-transform duration-300 ease-out md:hidden">
+    <div class="mb-8 flex items-center gap-3 px-6">
+      <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-500 text-slate-950 font-black text-2xl shadow-lg shadow-amber-500/20">☕</div>
+      <div>
+        <h2 class="text-lg font-extrabold tracking-tight text-slate-900">Aura Cafe</h2>
+        <p class="text-xs font-semibold uppercase tracking-wider text-amber-600">Management</p>
+      </div>
+    </div>
+    <app-sidebar></app-sidebar>
+  </aside>
+</div>
