@@ -1,0 +1,66 @@
+<header class="fixed top-0 left-0 right-0 z-50 bg-white border-b transition-all duration-300"
+  [ngClass]="scrolled() ? 'shadow-md border-slate-200/80' : 'border-slate-100'">
+  <div class="container-custom">
+    <nav class="flex items-center justify-between h-16 lg:h-20">
+      <!-- Logo -->
+      <a routerLink="/" class="flex items-center gap-4 group">
+        <img src="companylogo.png" alt="AES Logo"
+          class="h-16 md:h-20 lg:h-16 w-auto object-contain transition-all duration-300 ease-in-out group-hover:scale-110" />
+      </a>
+
+      <!-- Desktop Nav -->
+      <div class="hidden lg:flex items-center gap-1">
+        @for (link of navLinks; track link.path) {
+        <a [routerLink]="link.path" routerLinkActive="text-aes-navy bg-slate-50 font-semibold"
+          [routerLinkActiveOptions]="{exact: link.path === '/'}"
+          class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-aes-navy hover:bg-slate-50 transition-all duration-200 rounded-xl">{{
+          link.label }}</a>
+        }
+      </div>
+
+      <!-- CTA -->
+      <div class="hidden lg:flex items-center gap-3">
+        @if (authService.isAuthenticated()) {
+        <a routerLink="/admin/dashboard" class="btn-outline btn-sm">Admin Portal</a>
+        } @else {
+        <a routerLink="/contact" class="btn-primary btn-sm">Get Quote</a>
+        }
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button (click)="toggleMenu()"
+        class="lg:hidden p-2 rounded-lg text-slate-600 hover:text-aes-navy hover:bg-slate-100 transition-colors"
+        [attr.aria-expanded]="menuOpen()" aria-label="Toggle navigation">
+        @if (menuOpen()) {
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        } @else {
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        }
+      </button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    @if (menuOpen()) {
+    <div class="lg:hidden pb-4 animate-slide-up bg-white">
+      <div class="flex flex-col gap-1 border-t border-slate-100 pt-4">
+        @for (link of navLinks; track link.path) {
+        <a [routerLink]="link.path" routerLinkActive="text-aes-navy bg-slate-50 font-semibold"
+          [routerLinkActiveOptions]="{exact: link.path === '/'}" (click)="closeMenu()"
+          class="px-4 py-3 text-sm font-medium text-slate-600 hover:text-aes-navy hover:bg-slate-50 rounded-xl transition-all duration-200">{{
+          link.label }}</a>
+        }
+        <div class="pt-2 border-t border-slate-100 mt-2">
+          <a routerLink="/contact" (click)="closeMenu()" class="btn-primary w-full justify-center">Get a Quote</a>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</header>
+
+<!-- Spacer for fixed header -->
+<div class="h-16 lg:h-20"></div>

@@ -1,0 +1,136 @@
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="font-heading text-2xl font-bold text-white">Team Management</h1>
+      <p class="text-aes-muted text-sm">Add and manage directors, technical leaders, and support teams.</p>
+    </div>
+    <button (click)="openCreateModal()" class="btn-primary btn-sm">
+      <span>➕</span> Add Member
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="flex justify-center py-12"><div class="spinner"></div></div>
+  } @else if (team().length === 0) {
+    <div class="card text-center py-12 text-aes-muted">
+      <p class="text-lg mb-2">No team members found</p>
+      <button (click)="openCreateModal()" class="btn-outline btn-sm">Add First Member</button>
+    </div>
+  } @else {
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (member of team(); track member._id) {
+        <div class="card text-center group hover:border-aes-yellow/50 flex flex-col justify-between h-full">
+          <div>
+            <div class="w-20 h-20 rounded-full mx-auto overflow-hidden bg-aes-navy border-4 border-aes-yellow/20 mb-4">
+              @if (member.imageUrl) {
+                <img [src]="member.imageUrl" [alt]="member.name" class="w-full h-full object-cover" />
+              } @else {
+                <div class="w-full h-full flex items-center justify-center text-4xl">👤</div>
+              }
+            </div>
+            <h3 class="font-heading font-bold text-white text-base leading-tight">{{ member.name }}</h3>
+            <p class="text-aes-yellow text-xs font-semibold mt-1">{{ member.designation }}</p>
+            @if (member.qualification) {
+              <p class="text-aes-muted text-xs mt-1">Qual: {{ member.qualification }}</p>
+            }
+            @if (member.experience) {
+              <p class="text-aes-muted text-xs mt-0.5">Exp: {{ member.experience }}</p>
+            }
+            @if (member.description) {
+              <p class="text-aes-muted text-xs leading-relaxed mt-3 line-clamp-3">{{ member.description }}</p>
+            }
+          </div>
+          <div class="flex items-center gap-2 mt-5 pt-3 border-t border-aes-border">
+            <button (click)="openEditModal(member)" class="btn-outline btn-sm py-1 flex-1 text-xs">✏️ Edit</button>
+            <button (click)="deleteMember(member._id)" class="btn-danger btn-sm py-1 px-3">🗑️</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Modal -->
+  @if (showModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" (click)="closeModal()">
+      <div class="card w-full max-w-lg bg-aes-card/95 border border-aes-border shadow-aes scale-in max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
+        <div class="flex items-center justify-between border-b border-aes-border pb-4 mb-6">
+          <h2 class="font-heading text-xl font-bold text-white">
+            {{ isEditMode() ? 'Edit Member' : 'Add Member' }}
+          </h2>
+          <button (click)="closeModal()" class="text-aes-muted hover:text-white text-xl">✕</button>
+        </div>
+
+        <form [formGroup]="teamForm" (ngSubmit)="onSubmit()" class="space-y-4">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">Full Name *</label>
+              <input id="team-name" type="text" formControlName="name" class="form-input" placeholder="e.g. Abinash Behera" />
+            </div>
+            <div>
+              <label class="form-label">Designation *</label>
+              <input id="team-desg" type="text" formControlName="designation" class="form-input" placeholder="e.g. Director" />
+            </div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">Qualification</label>
+              <input id="team-qual" type="text" formControlName="qualification" class="form-input" placeholder="e.g. B.Tech" />
+            </div>
+            <div>
+              <label class="form-label">Experience</label>
+              <input id="team-exp" type="text" formControlName="experience" class="form-input" placeholder="e.g. 20+ Years" />
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">Key Skills / Focus Areas</label>
+            <input id="team-skills" type="text" formControlName="skills" class="form-input" placeholder="Comma-separated e.g. UT, MT, RT" />
+          </div>
+
+          <div>
+            <label class="form-label">Profile Description</label>
+            <textarea id="team-desc" formControlName="description" class="form-input" rows="3" placeholder="Member bio..."></textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">Display Order</label>
+              <input id="team-order" type="number" formControlName="order" class="form-input" placeholder="0" />
+            </div>
+            <div>
+              <label class="form-label">Status *</label>
+              <select id="team-status" formControlName="status" class="form-input">
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">Profile Photo</label>
+            <input id="team-img" type="file" (change)="onFileChange($event)" class="form-input text-xs" accept="image/*" />
+            @if (imagePreview()) {
+              <img [src]="imagePreview()" class="h-20 object-contain rounded mt-2 border border-aes-border" alt="Profile preview" />
+            }
+          </div>
+
+          <button
+            id="team-submit-btn"
+            type="submit"
+            [disabled]="submitting() || teamForm.invalid"
+            class="btn-primary w-full justify-center"
+            [ngClass]="(submitting() || teamForm.invalid) ? 'opacity-60' : ''"
+          >
+            @if (submitting()) {
+              <span class="w-4 h-4 border-2 border-aes-navy/50 border-t-aes-navy rounded-full animate-spin"></span>
+              <span>Saving...</span>
+            } @else {
+              <span>💾</span> <span>Save Member</span>
+            }
+          </button>
+        </form>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,194 @@
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="font-heading text-2xl font-bold text-white">Service Management</h1>
+      <p class="text-aes-muted text-sm">Create and modify NDT and engineering consultancy services.</p>
+    </div>
+    <button (click)="openCreateModal()" class="btn-primary btn-sm">
+      <span>➕</span> Add Service
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="flex justify-center py-12"><div class="spinner"></div></div>
+  } @else if (services().length === 0) {
+    <div class="card text-center py-12 text-aes-muted">
+      <p class="text-lg mb-2">No services found</p>
+      <button (click)="openCreateModal()" class="btn-outline btn-sm">Create First Service</button>
+    </div>
+  } @else {
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (service of services(); track service._id) {
+        <div class="card p-0 overflow-hidden flex flex-col group border-aes-border hover:border-aes-yellow/30 transition-all">
+          <div class="relative h-44 bg-aes-navy overflow-hidden">
+            @if (service.images.length > 0) {
+              <img [src]="service.images[0].imageUrl" [alt]="service.name" class="w-full h-full object-cover" />
+            } @else {
+              <div class="w-full h-full flex items-center justify-center text-5xl">⚙️</div>
+            }
+            <div class="absolute inset-0 bg-black/40"></div>
+            <span
+              class="absolute top-3 right-3 text-xs font-semibold px-2 py-0.5 rounded-full"
+              [ngClass]="service.status === 'ACTIVE' ? 'badge-active' : 'badge-inactive'"
+            >
+              {{ service.status }}
+            </span>
+            <span class="absolute bottom-3 left-3 bg-aes-navy/80 text-aes-yellow border border-aes-border px-2 py-0.5 rounded text-xs font-semibold">
+              Order: {{ service.order }}
+            </span>
+          </div>
+          <div class="p-5 flex-1 flex flex-col justify-between gap-4">
+            <div>
+              <h3 class="font-heading font-bold text-white text-base leading-tight truncate">{{ service.name }}</h3>
+              <p class="text-aes-muted text-xs line-clamp-2 mt-2 leading-relaxed">{{ service.description }}</p>
+
+              <!-- Apps summary -->
+              @if (service.applications.length > 0) {
+                <div class="flex flex-wrap gap-1 mt-3">
+                  @for (app of service.applications.slice(0, 3); track app) {
+                    <span class="px-2 py-0.5 text-[9px] bg-aes-yellow/10 border border-aes-yellow/20 text-aes-yellow rounded">
+                      {{ app }}
+                    </span>
+                  }
+                  @if (service.applications.length > 3) {
+                    <span class="text-[9px] text-aes-muted self-center ml-1">+{{ service.applications.length - 3 }} more</span>
+                  }
+                </div>
+              }
+            </div>
+            <div class="flex items-center gap-2 pt-2 border-t border-aes-border/50">
+              <button (click)="openEditModal(service)" class="btn-outline btn-sm py-1.5 flex-1 justify-center text-xs">
+                ✏️ Edit
+              </button>
+              <button (click)="toggleStatus(service)" class="btn-secondary btn-sm py-1.5 flex-1 justify-center text-xs">
+                🔄 Toggle
+              </button>
+              <button (click)="deleteService(service._id)" class="btn-danger btn-sm py-1.5 px-3 justify-center text-xs">
+                🗑️
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Modal -->
+  @if (showModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" (click)="closeModal()">
+      <div class="card w-full max-w-2xl bg-aes-card/95 border border-aes-border shadow-aes scale-in max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
+        <div class="flex items-center justify-between border-b border-aes-border pb-4 mb-6">
+          <h2 class="font-heading text-xl font-bold text-white">
+            {{ isEditMode() ? 'Edit Service' : 'Create Service' }}
+          </h2>
+          <button (click)="closeModal()" class="text-aes-muted hover:text-white text-xl">✕</button>
+        </div>
+
+        <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()" class="space-y-4">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">Service Name *</label>
+              <input id="service-name" type="text" formControlName="name" class="form-input" placeholder="e.g. Radiographic Testing" />
+            </div>
+            <div>
+              <label class="form-label">Display Order</label>
+              <input id="service-order" type="number" formControlName="order" class="form-input" placeholder="0" />
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">Description *</label>
+            <textarea id="service-desc" formControlName="description" class="form-input" rows="4" placeholder="Detailed service description..."></textarea>
+          </div>
+
+          <!-- Applications Section -->
+          <div class="card p-4">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-heading text-sm font-bold text-white">Applications / Scope</h3>
+              <button type="button" (click)="addApplicationItem()" class="btn-outline btn-sm py-1 px-2 text-xs">
+                ➕ Add Item
+              </button>
+            </div>
+            <div class="space-y-2">
+              @for (app of applicationItems(); track $index; let i = $index) {
+                <div class="flex items-center gap-2">
+                  <input
+                    type="text"
+                    [value]="app"
+                    (input)="updateApplicationItem(i, $event)"
+                    class="form-input py-1.5 text-xs"
+                    placeholder="Application target..."
+                  />
+                  <button
+                    type="button"
+                    (click)="removeApplicationItem(i)"
+                    class="btn-danger btn-sm py-1.5 px-3"
+                    aria-label="Remove application point"
+                  >🗑️</button>
+                </div>
+              }
+              @if (applicationItems().length === 0) {
+                <p class="text-aes-muted text-[11px]">No application points added.</p>
+              }
+            </div>
+          </div>
+
+          <!-- Images Upload / Preview -->
+          <div>
+            <label class="form-label">Upload Images</label>
+            <input id="service-imgs" type="file" (change)="onFileChange($event)" class="form-input text-xs" multiple accept="image/*" />
+
+            <!-- Existing Images for Edit Mode -->
+            @if (isEditMode() && existingImages().length > 0) {
+              <div class="mt-3">
+                <p class="text-aes-muted text-xs mb-2">Existing Images:</p>
+                <div class="grid grid-cols-4 gap-2">
+                  @for (img of existingImages(); track $index; let i = $index) {
+                    <div class="relative rounded-lg overflow-hidden border border-aes-border aspect-square">
+                      <img [src]="img.imageUrl" class="w-full h-full object-cover" alt="Service thumbnail" />
+                      <button
+                        type="button"
+                        (click)="deleteExistingImage(i)"
+                        class="absolute top-1 right-1 bg-red-600/85 hover:bg-red-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px]"
+                        aria-label="Delete image"
+                      >✕</button>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            <!-- New Upload Preview -->
+            @if (newImagePreviews().length > 0) {
+              <div class="mt-3">
+                <p class="text-aes-muted text-xs mb-2">New Images to Upload:</p>
+                <div class="grid grid-cols-4 gap-2">
+                  @for (prev of newImagePreviews(); track $index) {
+                    <div class="rounded-lg overflow-hidden border border-aes-border aspect-square">
+                      <img [src]="prev" class="w-full h-full object-cover" alt="Upload preview" />
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+
+          <button
+            id="service-submit-btn"
+            type="submit"
+            [disabled]="submitting() || serviceForm.invalid"
+            class="btn-primary w-full justify-center"
+            [ngClass]="(submitting() || serviceForm.invalid) ? 'opacity-60' : ''"
+          >
+            @if (submitting()) {
+              <span class="w-4 h-4 border-2 border-aes-navy/50 border-t-aes-navy rounded-full animate-spin"></span>
+              <span>Saving...</span>
+            } @else {
+              <span>💾</span> <span>Save Service</span>
+            }
+          </button>
+        </form>
+      </div>
+    </div>
+  }
+</div>

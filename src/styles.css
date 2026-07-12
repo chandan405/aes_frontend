@@ -1,0 +1,324 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800;900&display=swap');
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* ── CSS Custom Properties ─────────────────────────────────────────────────── */
+:root {
+  --color-primary: #FAF7ED;        /* Light Cream background for body */
+  --color-secondary: #232E48;      /* Primary Navy */
+  --color-accent: #D2232A;         /* Primary Red */
+  --color-accent-dark: #B71C1C;    /* Dark Red */
+  --color-surface: #FAF7ED;        /* Cream background */
+  --color-card: #FFFFFF;           /* White cards */
+  --color-text: #232E48;           /* Dark Navy text */
+  --color-muted: #57687C;          /* Muted slate text */
+  --color-border: #E2E8F0;         /* Light slate border */
+  --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Global Contrast Overrides for Light Theme ────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-text);
+}
+
+.text-white {
+  color: var(--color-secondary) !important;
+}
+
+/* Set white/light text and mute variables globally inside dark containers */
+footer,
+aside,
+.bg-aes-navy,
+.bg-dark,
+[class*="from-aes-navy"],
+[class*="bg-aes-navy"] {
+  --color-text: #FFFFFF !important;
+  --color-muted: #CBD5E1 !important;
+}
+
+/* Retain white text inside dark backgrounds, badges, and buttons */
+.bg-aes-navy .text-white,
+.bg-aes-blue .text-white,
+.bg-aes-navy\/95 .text-white,
+.bg-aes-navy\/80 .text-white,
+.bg-aes-yellow .text-white,
+.bg-red-600 .text-white,
+.bg-green-600 .text-white,
+.bg-white\/10 .text-white,
+.bg-aes-yellow\/15 .text-white,
+.bg-aes-yellow\/10 .text-white,
+.lightbox-overlay .text-white,
+.card-glass .text-white,
+aside .text-white,
+footer .text-white,
+.bg-dark .text-white,
+[class*="from-aes-navy"] .text-white,
+[class*="bg-aes-navy"] .text-white,
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.badge-active,
+.badge-inactive,
+.badge-pending,
+.badge-approved,
+.badge-rejected {
+  color: #ffffff !important;
+}
+
+/* ── Global Reset & Base ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--color-primary);
+  color: var(--color-text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* ── Scrollbar Styling ─────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-primary); }
+::-webkit-scrollbar-thumb { background: var(--color-secondary); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+
+/* ── Selection ─────────────────────────────────────────────────────────────── */
+::selection {
+  background-color: rgba(245, 166, 35, 0.3);
+  color: #fff;
+}
+
+/* ── Utility Classes ───────────────────────────────────────────────────────── */
+@layer components {
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-6 py-3 bg-aes-yellow text-aes-navy font-semibold rounded-xl
+           transition-all duration-300 hover:bg-aes-yellow-light hover:shadow-aes-glow
+           focus:outline-none focus:ring-2 focus:ring-aes-yellow focus:ring-offset-2 focus:ring-offset-aes-navy
+           active:scale-95 cursor-pointer;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2 px-6 py-3 border-2 border-aes-yellow text-aes-yellow font-semibold
+           rounded-xl transition-all duration-300 hover:bg-aes-yellow hover:text-aes-navy
+           focus:outline-none focus:ring-2 focus:ring-aes-yellow active:scale-95 cursor-pointer;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-6 py-3 bg-aes-blue text-white font-semibold rounded-xl
+           transition-all duration-300 hover:bg-aes-blue-light
+           focus:outline-none focus:ring-2 focus:ring-aes-blue active:scale-95 cursor-pointer;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white font-semibold rounded-lg
+           transition-all duration-300 hover:bg-red-700 focus:outline-none active:scale-95 cursor-pointer;
+  }
+
+  .btn-sm {
+    @apply px-4 py-2 text-sm;
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-aes-card border border-aes-border rounded-2xl p-6 shadow-card
+           transition-all duration-300 hover:shadow-card-hover hover:border-aes-yellow/30;
+  }
+
+  .card-glass {
+    @apply backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl p-6 shadow-card
+           transition-all duration-300 hover:bg-white/10 hover:border-aes-yellow/30;
+  }
+
+  /* Section */
+  .section-padding { @apply py-16 lg:py-24; }
+  .container-custom { @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; }
+
+  /* Section Header */
+  .section-title {
+    @apply font-heading text-3xl sm:text-4xl font-bold text-white mb-4;
+  }
+
+  .section-subtitle {
+    @apply text-aes-muted text-lg max-w-2xl;
+  }
+
+  .section-tag {
+    @apply inline-block px-4 py-1 text-xs font-semibold uppercase tracking-widest
+           text-aes-yellow border border-aes-yellow/30 bg-aes-yellow/10 rounded-full mb-4;
+  }
+
+  /* Badge */
+  .badge-active {
+    @apply px-2 py-1 text-xs font-semibold rounded-full bg-green-500/20 text-green-400 border border-green-500/30;
+  }
+  .badge-inactive {
+    @apply px-2 py-1 text-xs font-semibold rounded-full bg-red-500/20 text-red-400 border border-red-500/30;
+  }
+  .badge-pending {
+    @apply px-2 py-1 text-xs font-semibold rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/30;
+  }
+  .badge-approved {
+    @apply px-2 py-1 text-xs font-semibold rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30;
+  }
+  .badge-rejected {
+    @apply px-2 py-1 text-xs font-semibold rounded-full bg-red-500/20 text-red-400 border border-red-500/30;
+  }
+
+  /* Form controls */
+  .form-input {
+    @apply w-full px-4 py-3 bg-white border border-aes-border rounded-xl text-aes-navy
+           placeholder-aes-muted focus:outline-none focus:ring-2 focus:ring-aes-yellow/50
+           focus:border-aes-yellow transition-all duration-300;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-aes-navy mb-2;
+  }
+
+  .form-error {
+    @apply text-red-600 text-sm mt-1;
+  }
+
+  /* Stat card */
+  .stat-card {
+    @apply card text-center relative overflow-hidden;
+  }
+  .stat-number {
+    @apply font-heading text-4xl font-bold text-aes-yellow;
+  }
+  .stat-label {
+    @apply text-aes-muted text-sm font-medium mt-1;
+  }
+
+  /* Table */
+  .table-container {
+    @apply overflow-x-auto rounded-xl border border-aes-border;
+  }
+  .table-custom {
+    @apply w-full text-sm;
+  }
+  .table-custom thead tr {
+    @apply bg-aes-surface text-aes-muted;
+  }
+  .table-custom thead th {
+    @apply px-4 py-3 text-left font-medium text-xs uppercase tracking-wider;
+  }
+  .table-custom tbody tr {
+    @apply border-t border-aes-border hover:bg-white/5 transition-colors;
+  }
+  .table-custom tbody td {
+    @apply px-4 py-3 text-aes-text;
+  }
+
+  /* Glassmorphism overlay */
+  .glass {
+    @apply backdrop-blur-md bg-white/5 border border-white/10;
+  }
+
+  /* Input focus ring */
+  .ring-aes { @apply ring-2 ring-aes-yellow ring-offset-2 ring-offset-aes-navy; }
+}
+
+/* ── Admin Sidebar ─────────────────────────────────────────────────────────── */
+.admin-sidebar-link {
+  @apply flex items-center gap-3 px-4 py-3 rounded-xl text-aes-muted font-medium
+         transition-all duration-200 hover:bg-aes-yellow/10 hover:text-aes-yellow;
+}
+
+.admin-sidebar-link.active {
+  @apply bg-aes-yellow/15 text-aes-yellow;
+}
+
+/* ── Lightbox overlay ──────────────────────────────────────────────────────── */
+.lightbox-overlay {
+  @apply fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm;
+}
+
+/* ── Hero Slider ───────────────────────────────────────────────────────────── */
+.hero-slide {
+  @apply absolute inset-0 transition-all duration-700 ease-in-out;
+}
+
+/* ── Gallery Masonry ───────────────────────────────────────────────────────── */
+.masonry-grid {
+  columns: 1;
+}
+@media (min-width: 640px) { .masonry-grid { columns: 2; } }
+@media (min-width: 1024px) { .masonry-grid { columns: 3; } }
+@media (min-width: 1280px) { .masonry-grid { columns: 4; } }
+
+.masonry-item {
+  @apply break-inside-avoid mb-4;
+}
+
+/* ── Loading Spinner ───────────────────────────────────────────────────────── */
+.spinner {
+  @apply w-8 h-8 border-4 border-aes-border border-t-aes-yellow rounded-full;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Reveal animation ──────────────────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Industrial grid background ────────────────────────────────────────────── */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(30, 58, 95, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 58, 95, 0.2) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* ── Swiper/Slider overrides ────────────────────────────────────────────────── */
+.swiper-pagination-bullet {
+  background: rgba(245, 166, 35, 0.5) !important;
+  width: 10px !important;
+  height: 10px !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: #F5A623 !important;
+  width: 30px !important;
+  border-radius: 5px !important;
+}
+
+/* ── Tooltip ────────────────────────────────────────────────────────────────── */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white
+         bg-aes-navy rounded whitespace-nowrap z-50;
+}

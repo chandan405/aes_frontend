@@ -1,0 +1,128 @@
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="font-heading text-2xl font-bold text-white">User Management</h1>
+      <p class="text-aes-muted text-sm">Super Admin portal to add and manage administrative team accounts.</p>
+    </div>
+    <button (click)="openCreateModal()" class="btn-primary btn-sm">
+      <span>➕</span> Create User
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="flex justify-center py-12"><div class="spinner"></div></div>
+  } @else if (users().length === 0) {
+    <div class="card text-center py-12 text-aes-muted">
+      <p>No admin users found.</p>
+    </div>
+  } @else {
+    <div class="card p-0 overflow-hidden">
+      <div class="table-container">
+        <table class="table-custom">
+          <thead>
+            <tr>
+              <th>User Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (u of users(); track u._id) {
+              <tr>
+                <td class="font-bold text-white">{{ u.name }}</td>
+                <td>{{ u.email }}</td>
+                <td>
+                  <span class="px-2 py-0.5 text-xs rounded bg-aes-surface border border-aes-border text-aes-yellow font-bold">
+                    {{ u.role }}
+                  </span>
+                </td>
+                <td>
+                  <span
+                    class="px-2 py-0.5 rounded-full text-xs font-semibold"
+                    [ngClass]="u.status === 'ACTIVE' ? 'badge-active' : 'badge-inactive'"
+                  >
+                    {{ u.status }}
+                  </span>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button (click)="openEditModal(u)" class="text-aes-yellow hover:text-white text-xs px-2 py-1">✏️ Edit</button>
+                    <span class="text-aes-border">|</span>
+                    <button (click)="deleteUser(u._id)" class="text-red-400 hover:text-white text-xs px-2 py-1">🗑️ Delete</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  <!-- Modal -->
+  @if (showModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" (click)="closeModal()">
+      <div class="card w-full max-w-md bg-aes-card/95 border border-aes-border shadow-aes scale-in" (click)="$event.stopPropagation()">
+        <div class="flex items-center justify-between border-b border-aes-border pb-4 mb-6">
+          <h2 class="font-heading text-xl font-bold text-white">
+            {{ isEditMode() ? 'Edit Admin User' : 'Create Admin User' }}
+          </h2>
+          <button (click)="closeModal()" class="text-aes-muted hover:text-white text-xl">✕</button>
+        </div>
+
+        <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-4">
+          <div>
+            <label class="form-label">Full Name *</label>
+            <input id="user-name" type="text" formControlName="name" class="form-input" placeholder="User name" />
+          </div>
+
+          <div>
+            <label class="form-label">Email Address *</label>
+            <input id="user-email" type="email" formControlName="email" class="form-input" placeholder="user&#64;aes.com" />
+          </div>
+
+          @if (!isEditMode()) {
+            <div>
+              <label class="form-label">Password *</label>
+              <input id="user-pass" type="password" formControlName="password" class="form-input" placeholder="••••••••" />
+            </div>
+          }
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">Role *</label>
+              <select id="user-role" formControlName="role" class="form-input">
+                <option value="ADMIN">Admin</option>
+                <option value="SUPER_ADMIN">Super Admin</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Status *</label>
+              <select id="user-status" formControlName="status" class="form-input">
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+              </select>
+            </div>
+          </div>
+
+          <button
+            id="user-submit-btn"
+            type="submit"
+            [disabled]="submitting() || userForm.invalid"
+            class="btn-primary w-full justify-center"
+            [ngClass]="(submitting() || userForm.invalid) ? 'opacity-60' : ''"
+          >
+            @if (submitting()) {
+              <span class="w-4 h-4 border-2 border-aes-navy/50 border-t-aes-navy rounded-full animate-spin"></span>
+              <span>Saving...</span>
+            } @else {
+              <span>💾</span> <span>Save User</span>
+            }
+          </button>
+        </form>
+      </div>
+    </div>
+  }
+</div>

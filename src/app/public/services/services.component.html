@@ -1,0 +1,86 @@
+<!-- Page Header -->
+<section class="relative py-20 overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-br from-aes-navy via-aes-surface to-aes-navy"></div>
+  <div class="absolute inset-0 bg-grid opacity-30"></div>
+  <div class="container-custom relative z-10 text-center">
+    <span class="section-tag">NDT & Engineering</span>
+    <h1 class="font-heading text-4xl lg:text-5xl font-bold text-white mb-4">Our Services</h1>
+    <p class="text-aes-muted text-lg max-w-2xl mx-auto">
+      Comprehensive non-destructive testing and engineering services by ASNT Level III certified professionals.
+    </p>
+  </div>
+</section>
+
+<!-- Services Grid -->
+<section class="section-padding">
+  <div class="container-custom">
+    @if (loading()) {
+      <div class="flex justify-center py-16">
+        <div class="spinner"></div>
+      </div>
+    } @else {
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (service of services(); track service._id) {
+          <div class="card group hover:border-aes-yellow/50 hover:-translate-y-1 transition-all duration-300">
+            <!-- Service Images -->
+            @if (service.images.length > 0) {
+              <div class="relative h-48 rounded-xl overflow-hidden mb-4">
+                <img
+                  [src]="service.images[0].imageUrl"
+                  [alt]="service.name"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-aes-navy/70 to-transparent"></div>
+              </div>
+            } @else {
+              <div class="h-48 rounded-xl bg-aes-surface flex items-center justify-center mb-4 group-hover:bg-aes-blue/20 transition-colors">
+                <span class="text-5xl">{{ getServiceIcon(service.name) }}</span>
+              </div>
+            }
+
+            <h2 class="font-heading text-lg font-bold text-white mb-2 group-hover:text-aes-yellow transition-colors">
+              {{ service.name }}
+            </h2>
+            <p class="text-aes-muted text-sm leading-relaxed mb-4 line-clamp-3">{{ service.description }}</p>
+
+            <!-- Applications -->
+            @if (service.applications.length > 0) {
+              <div class="mb-4">
+                <p class="text-xs text-aes-muted font-medium uppercase tracking-wider mb-2">Applications:</p>
+                <div class="flex flex-wrap gap-1">
+                  @for (app of service.applications.slice(0, 3); track app) {
+                    <span class="px-2 py-0.5 text-xs bg-aes-yellow/10 text-aes-yellow border border-aes-yellow/20 rounded">
+                      {{ app }}
+                    </span>
+                  }
+                  @if (service.applications.length > 3) {
+                    <span class="px-2 py-0.5 text-xs text-aes-muted border border-aes-border rounded">
+                      +{{ service.applications.length - 3 }}
+                    </span>
+                  }
+                </div>
+              </div>
+            }
+
+            <a
+              [routerLink]="'/services/' + service.slug"
+              class="btn-outline btn-sm w-full justify-center"
+            >
+              Learn More →
+            </a>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section-padding bg-aes-surface">
+  <div class="container-custom text-center">
+    <h2 class="font-heading text-3xl font-bold text-white mb-4">Need a Custom Inspection?</h2>
+    <p class="text-aes-muted mb-8">Our team of experts will design the right inspection solution for you.</p>
+    <a routerLink="/contact" class="btn-primary text-lg px-10 py-4">📞 Contact Our Experts</a>
+  </div>
+</section>

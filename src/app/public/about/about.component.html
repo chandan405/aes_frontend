@@ -1,0 +1,175 @@
+<!-- Page Header -->
+<section class="relative py-20 overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-br from-aes-navy via-aes-surface to-aes-navy"></div>
+  <div class="absolute inset-0 bg-grid opacity-30"></div>
+  <div class="container-custom relative z-10 text-center">
+    <span class="section-tag">Who We Are</span>
+    <h1 class="font-heading text-4xl lg:text-5xl font-bold text-white mb-4">About AES</h1>
+    <p class="text-aes-muted text-lg max-w-2xl mx-auto">
+      India's most trusted NDT inspection and training organization delivering technical excellence since 2004.
+    </p>
+  </div>
+</section>
+
+<!-- Company Profile -->
+<section class="section-padding">
+  <div class="container-custom">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <div>
+        <span class="section-tag">Our Story</span>
+        <h2 class="section-title">Abinash Engineering Services</h2>
+        <p class="text-aes-muted leading-relaxed mb-6">{{ about()?.companyProfile }}</p>
+        <div class="grid grid-cols-2 gap-4">
+          @for (stat of stats; track stat.label) {
+            <div class="card text-center">
+              <div class="font-heading text-3xl font-bold text-aes-yellow">{{ stat.value }}</div>
+              <div class="text-aes-muted text-sm mt-1">{{ stat.label }}</div>
+            </div>
+          }
+        </div>
+      </div>
+      <div class="space-y-4">
+        <!-- Locations -->
+        <div class="card">
+          <h3 class="font-heading font-semibold text-white mb-4 flex items-center gap-2">
+            <span class="text-aes-yellow">📍</span> Our Offices
+          </h3>
+          <div class="space-y-4">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-aes-yellow/10 flex items-center justify-center flex-shrink-0">🏢</div>
+              <div>
+                <p class="text-white font-semibold text-sm">Head Office</p>
+                <p class="text-aes-muted text-sm">Gudia Pokhari, Pipili<br>Odisha, India</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-aes-yellow/10 flex items-center justify-center flex-shrink-0">🏬</div>
+              <div>
+                <p class="text-white font-semibold text-sm">Branch Office</p>
+                <p class="text-aes-muted text-sm">Gandhinagar<br>Gujarat, India</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Certifications -->
+        <div class="card">
+          <h3 class="font-heading font-semibold text-white mb-4 flex items-center gap-2">
+            <span class="text-aes-yellow">🏆</span> Certifications
+          </h3>
+          <div class="flex flex-wrap gap-2">
+            @for (cert of certifications; track cert) {
+              <span class="px-3 py-1.5 bg-aes-yellow/10 border border-aes-yellow/30 text-aes-yellow text-xs font-medium rounded-lg">
+                {{ cert }}
+              </span>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Vision & Mission -->
+<section class="section-padding bg-aes-surface">
+  <div class="container-custom">
+    <div class="text-center mb-12">
+      <span class="section-tag">Our Purpose</span>
+      <h2 class="section-title">Vision & Mission</h2>
+    </div>
+    <div class="grid md:grid-cols-2 gap-8">
+      <!-- Vision -->
+      <div class="card relative overflow-hidden group hover:border-aes-yellow/50">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-aes-yellow/5 rounded-full blur-2xl group-hover:bg-aes-yellow/10 transition-all"></div>
+        <div class="w-14 h-14 rounded-2xl bg-aes-yellow/10 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">🔭</div>
+        <h3 class="font-heading text-xl font-bold text-white mb-3">Our Vision</h3>
+        <p class="text-aes-muted leading-relaxed italic text-lg border-l-4 border-aes-yellow pl-4">
+          "{{ about()?.vision }}"
+        </p>
+      </div>
+
+      <!-- Mission -->
+      <div class="card group hover:border-aes-yellow/50">
+        <div class="w-14 h-14 rounded-2xl bg-aes-yellow/10 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">🎯</div>
+        <h3 class="font-heading text-xl font-bold text-white mb-4">Our Mission</h3>
+        <ul class="space-y-3">
+          @for (item of about()?.mission || []; track item) {
+            <li class="flex items-start gap-3 text-aes-muted">
+              <span class="text-aes-yellow flex-shrink-0 mt-0.5">✓</span>
+              {{ item }}
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Industries -->
+<section class="section-padding">
+  <div class="container-custom">
+    <div class="text-center mb-12">
+      <span class="section-tag">Industries</span>
+      <h2 class="section-title">Industries We Serve</h2>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+      @for (industry of industries; track industry.name) {
+        <div class="card text-center group hover:border-aes-yellow/50 hover:-translate-y-1 transition-all">
+          <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">{{ industry.icon }}</div>
+          <h3 class="font-heading font-semibold text-white text-sm">{{ industry.name }}</h3>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Leadership Team -->
+@if (team().length > 0) {
+  <section class="section-padding bg-aes-surface">
+    <div class="container-custom">
+      <div class="text-center mb-12">
+        <span class="section-tag">Leadership</span>
+        <h2 class="section-title">Meet Our Team</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (member of team(); track member._id) {
+          <div class="card text-center group hover:border-aes-yellow/50">
+            <div class="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden bg-aes-blue/50 border-4 border-aes-yellow/20 group-hover:border-aes-yellow/60 transition-all">
+              @if (member.imageUrl) {
+                <img [src]="member.imageUrl" [alt]="member.name" class="w-full h-full object-cover" loading="lazy" />
+              } @else {
+                <div class="w-full h-full flex items-center justify-center text-3xl">👤</div>
+              }
+            </div>
+            <h3 class="font-heading font-bold text-white mb-1">{{ member.name }}</h3>
+            <p class="text-aes-yellow text-sm font-medium mb-2">{{ member.designation }}</p>
+            @if (member.qualification) {
+              <p class="text-aes-muted text-xs mb-1">{{ member.qualification }}</p>
+            }
+            @if (member.experience) {
+              <p class="text-aes-muted text-xs mb-3">{{ member.experience }}</p>
+            }
+            @if (member.skills.length > 0) {
+              <div class="flex flex-wrap gap-1 justify-center">
+                @for (skill of member.skills.slice(0, 4); track skill) {
+                  <span class="px-2 py-0.5 text-xs bg-aes-yellow/10 text-aes-yellow border border-aes-yellow/20 rounded-full">
+                    {{ skill }}
+                  </span>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+}
+
+<!-- CTA -->
+<section class="section-padding">
+  <div class="container-custom text-center">
+    <h2 class="font-heading text-3xl font-bold text-white mb-4">Ready to Work With Us?</h2>
+    <p class="text-aes-muted mb-8">Trusted by HAL, NTPC, DRDO, ONGC, and many more.</p>
+    <a routerLink="/contact" class="btn-primary text-lg px-10 py-4">Get In Touch</a>
+  </div>
+</section>

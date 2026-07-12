@@ -1,0 +1,133 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="font-heading text-2xl font-bold text-white">About Us Management</h1>
+    <p class="text-aes-muted text-sm">Update company profile, vision statement, mission list, and stats.</p>
+  </div>
+
+  @if (loading()) {
+    <div class="flex justify-center py-12"><div class="spinner"></div></div>
+  } @else {
+    <form [formGroup]="aboutForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <div class="grid lg:grid-cols-3 gap-6">
+        <!-- Left Side: Profile, Vision & Mission -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Company Profile -->
+          <div class="card">
+            <h2 class="font-heading text-lg font-bold text-white mb-4">Company Profile</h2>
+            <div>
+              <label class="form-label">Profile Description *</label>
+              <textarea id="about-profile" formControlName="companyProfile" class="form-input" rows="5" placeholder="Enter company profile..."></textarea>
+            </div>
+          </div>
+
+          <!-- Vision Statement -->
+          <div class="card">
+            <h2 class="font-heading text-lg font-bold text-white mb-4">Vision Statement</h2>
+            <div>
+              <label class="form-label">Vision *</label>
+              <textarea id="about-vision" formControlName="vision" class="form-input" rows="3" placeholder="Enter company vision..."></textarea>
+            </div>
+          </div>
+
+          <!-- Mission List -->
+          <div class="card">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="font-heading text-lg font-bold text-white">Mission Statements</h2>
+              <button type="button" (click)="addMissionItem()" class="btn-outline btn-sm">
+                ➕ Add Item
+              </button>
+            </div>
+
+            <div class="space-y-3">
+              @for (item of missionItems(); track $index; let i = $index) {
+                <div class="flex items-center gap-2">
+                  <input
+                    type="text"
+                    [value]="item"
+                    (input)="updateMissionItem(i, $event)"
+                    class="form-input"
+                    placeholder="Mission point..."
+                  />
+                  <button
+                    type="button"
+                    (click)="removeMissionItem(i)"
+                    class="btn-danger btn-sm px-3"
+                    aria-label="Remove mission point"
+                  >🗑️</button>
+                </div>
+              }
+              @if (missionItems().length === 0) {
+                <p class="text-aes-muted text-xs">No mission items added. Click Add Item to begin.</p>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Stats & Images -->
+        <div class="lg:col-span-1 space-y-6">
+          <!-- Analytics Stats -->
+          <div class="card" formGroupName="stats">
+            <h2 class="font-heading text-lg font-bold text-white mb-4">Homepage Stats</h2>
+            <div class="space-y-4">
+              <div>
+                <label class="form-label">Experience (Years) *</label>
+                <input id="stat-exp" type="text" formControlName="experience" class="form-input" />
+              </div>
+              <div>
+                <label class="form-label">Customers / Clients *</label>
+                <input id="stat-cust" type="text" formControlName="customers" class="form-input" />
+              </div>
+              <div>
+                <label class="form-label">Completed Projects *</label>
+                <input id="stat-proj" type="text" formControlName="projects" class="form-input" />
+              </div>
+              <div>
+                <label class="form-label">Certified Engineers *</label>
+                <input id="stat-eng" type="text" formControlName="engineers" class="form-input" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Media Uploads -->
+          <div class="card">
+            <h2 class="font-heading text-lg font-bold text-white mb-4">Images</h2>
+            <div class="space-y-4">
+              <div>
+                <label class="form-label">About Us Section Image</label>
+                <input id="img-about" type="file" (change)="onFileChange($event, 'about')" class="form-input text-xs" accept="image/*" />
+                @if (aboutImagePreview()) {
+                  <img [src]="aboutImagePreview()" class="h-20 object-contain rounded mt-2 border border-aes-border" alt="About us image" />
+                }
+              </div>
+              <div>
+                <label class="form-label">Vision Section Image</label>
+                <input id="img-vision" type="file" (change)="onFileChange($event, 'vision')" class="form-input text-xs" accept="image/*" />
+                @if (visionImagePreview()) {
+                  <img [src]="visionImagePreview()" class="h-20 object-contain rounded mt-2 border border-aes-border" alt="Vision image" />
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Bar -->
+      <div class="card flex justify-end">
+        <button
+          id="about-save-btn"
+          type="submit"
+          [disabled]="submitting() || aboutForm.invalid"
+          class="btn-primary w-full sm:w-auto"
+          [ngClass]="(submitting() || aboutForm.invalid) ? 'opacity-60' : ''"
+        >
+          @if (submitting()) {
+            <span class="w-4 h-4 border-2 border-aes-navy/50 border-t-aes-navy rounded-full animate-spin"></span>
+            <span>Saving Changes...</span>
+          } @else {
+            <span>💾</span> <span>Save All Changes</span>
+          }
+        </button>
+      </div>
+    </form>
+  }
+</div>

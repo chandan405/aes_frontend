@@ -1,0 +1,188 @@
+<!-- Page Header -->
+<section class="relative py-20 overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-br from-aes-navy via-aes-surface to-aes-navy"></div>
+  <div class="absolute inset-0 bg-grid opacity-30"></div>
+  <div class="container-custom relative z-10 text-center">
+    <span class="section-tag">Get in touch</span>
+    <h1 class="font-heading text-4xl lg:text-5xl font-bold text-white mb-4">Contact Us</h1>
+    <p class="text-aes-muted text-lg max-w-2xl mx-auto">
+      Contact our ASNT Level III experts for consultation, project design, or customized inspection quotes.
+    </p>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section class="section-padding">
+  <div class="container-custom">
+    <div class="grid lg:grid-cols-3 gap-8">
+      <!-- Contact Info Cards (Left Column) -->
+      <div class="lg:col-span-1 space-y-4">
+        <!-- Offices Card -->
+        <div class="card">
+          <h2 class="font-heading text-xl font-bold text-white mb-6">Our Locations</h2>
+          <div class="space-y-6">
+            <!-- Head Office -->
+            <div class="flex items-start gap-4">
+              <span class="text-aes-yellow text-xl mt-0.5">📍</span>
+              <div>
+                <h3 class="font-heading font-semibold text-white text-sm">Head Office (Odisha)</h3>
+                <p class="text-aes-muted text-sm leading-relaxed mt-1">
+                  Gudia Pokhari, Pipili,<br>Odisha, India
+                </p>
+              </div>
+            </div>
+
+            <!-- Branch Office -->
+            <div class="flex items-start gap-4">
+              <span class="text-aes-yellow text-xl mt-0.5">📍</span>
+              <div>
+                <h3 class="font-heading font-semibold text-white text-sm">Branch Office (Gujarat)</h3>
+                <p class="text-aes-muted text-sm leading-relaxed mt-1">
+                  Gandhinagar,<br>Gujarat, India
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Get In Touch Card -->
+        <div class="card">
+          <h2 class="font-heading text-xl font-bold text-white mb-6">Immediate Support</h2>
+          <div class="space-y-4 text-sm">
+            <div class="flex items-center gap-3">
+              <span class="text-aes-yellow text-lg">📧</span>
+              <a href="mailto:info&#64;aes.com" class="text-aes-muted hover:text-aes-yellow transition-colors">
+                info&#64;aes.com
+              </a>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-aes-yellow text-lg">📞</span>
+              <a href="tel:+919876543210" class="text-aes-muted hover:text-aes-yellow transition-colors">
+                +91 98765 43210
+              </a>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-aes-yellow text-lg">👷</span>
+              <span class="text-aes-muted">ASNT Level III Consultation</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form (Right Column) -->
+      <div class="lg:col-span-2">
+        <div class="card">
+          <h2 class="font-heading text-xl font-bold text-white mb-6">Send Us an Enquiry</h2>
+
+          <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="space-y-4">
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="form-label">Your Name *</label>
+                <input
+                  id="contact-name"
+                  type="text"
+                  formControlName="name"
+                  class="form-input"
+                  placeholder="Enter your name"
+                />
+                @if (contactForm.get('name')?.invalid && contactForm.get('name')?.touched) {
+                  <p class="form-error">Name is required</p>
+                }
+              </div>
+              <div>
+                <label class="form-label">Email Address *</label>
+                <input
+                  id="contact-email"
+                  type="email"
+                  formControlName="email"
+                  class="form-input"
+                  placeholder="your&#64;email.com"
+                />
+                @if (contactForm.get('email')?.invalid && contactForm.get('email')?.touched) {
+                  <p class="form-error">Valid email is required</p>
+                }
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="form-label">Phone Number *</label>
+                <input
+                  id="contact-phone"
+                  type="tel"
+                  formControlName="phone"
+                  class="form-input"
+                  placeholder="+91 XXXXX XXXXX"
+                />
+                @if (contactForm.get('phone')?.invalid && contactForm.get('phone')?.touched) {
+                  <p class="form-error">Phone number is required</p>
+                }
+              </div>
+              <div>
+                <label class="form-label">Service Required</label>
+                <select
+                  id="contact-service"
+                  formControlName="serviceRequired"
+                  class="form-input"
+                >
+                  <option value="">-- Select Service --</option>
+                  @for (s of services; track s) {
+                    <option [value]="s">{{ s }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="form-label">Your Message *</label>
+              <textarea
+                id="contact-message"
+                formControlName="message"
+                class="form-input"
+                rows="5"
+                placeholder="Describe your inspection or training requirements..."
+              ></textarea>
+              @if (contactForm.get('message')?.invalid && contactForm.get('message')?.touched) {
+                <p class="form-error">Message is required</p>
+              }
+            </div>
+
+            @if (submitted()) {
+              <div class="px-4 py-3 bg-green-900/30 border border-green-500/30 rounded-xl text-green-300 text-sm">
+                ✅ Your enquiry was submitted successfully! We'll get back to you shortly.
+              </div>
+            }
+
+            <button
+              id="contact-submit-btn"
+              type="submit"
+              [disabled]="submitting() || contactForm.invalid"
+              class="btn-primary w-full justify-center"
+              [ngClass]="(submitting() || contactForm.invalid) ? 'opacity-60 cursor-not-allowed' : ''"
+            >
+              @if (submitting()) {
+                <span class="w-4 h-4 border-2 border-aes-navy/50 border-t-aes-navy rounded-full animate-spin"></span>
+                <span>Sending Enquiry...</span>
+              } @else {
+                <span>✉️</span> <span>Send Enquiry</span>
+              }
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Google Map Section -->
+    <div class="mt-12 rounded-3xl overflow-hidden shadow-aes border border-aes-border aspect-[21/9]">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3744.9754124376176!2d85.8361111!3d20.1763889!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjDCsDEwJzM1LjAiTiA4NcKwNTAnMTAuMCJF!5e0!3m2!1sen!2sin!4v1625470000000!5m2!1sen!2sin"
+        width="100%"
+        height="100%"
+        style="border:0;"
+        allowfullscreen=""
+        loading="lazy"
+        title="AES Head Office Map"
+      ></iframe>
+    </div>
+  </div>
+</section>

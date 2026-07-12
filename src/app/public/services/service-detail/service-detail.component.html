@@ -1,0 +1,76 @@
+@if (loading()) {
+  <div class="flex justify-center items-center min-h-screen">
+    <div class="spinner"></div>
+  </div>
+} @else if (service()) {
+  <!-- Hero -->
+  <section class="relative py-20 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-aes-navy via-aes-surface to-aes-navy"></div>
+    <div class="absolute inset-0 bg-grid opacity-30"></div>
+    <div class="container-custom relative z-10">
+      <nav class="text-sm text-aes-muted mb-6 flex items-center gap-2">
+        <a href="/" class="hover:text-aes-yellow transition-colors">Home</a>
+        <span>›</span>
+        <a href="/services" class="hover:text-aes-yellow transition-colors">Services</a>
+        <span>›</span>
+        <span class="text-white">{{ service()!.name }}</span>
+      </nav>
+      <h1 class="font-heading text-4xl font-bold text-white mb-4">{{ service()!.name }}</h1>
+      <p class="text-aes-muted text-lg max-w-2xl">{{ service()!.description }}</p>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <section class="section-padding">
+    <div class="container-custom">
+      <div class="grid lg:grid-cols-3 gap-8">
+        <!-- Main -->
+        <div class="lg:col-span-2 space-y-8">
+          <!-- Image Gallery -->
+          @if (service()!.images.length > 0) {
+            <div class="grid grid-cols-2 gap-3">
+              @for (img of service()!.images; track img.imageUrl; let i = $index) {
+                <div class="relative overflow-hidden rounded-xl aspect-video" [class.col-span-2]="i === 0">
+                  <img [src]="img.imageUrl" [alt]="img.caption || service()!.name" class="w-full h-full object-cover" loading="lazy" />
+                </div>
+              }
+            </div>
+          }
+
+          <!-- Description -->
+          <div class="card">
+            <h2 class="font-heading text-xl font-bold text-white mb-4">Service Overview</h2>
+            <p class="text-aes-muted leading-relaxed">{{ service()!.description }}</p>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-4">
+          <!-- Applications -->
+          @if (service()!.applications.length > 0) {
+            <div class="card">
+              <h3 class="font-heading font-bold text-white mb-4 flex items-center gap-2">
+                <span class="text-aes-yellow">⚙️</span> Applications
+              </h3>
+              <ul class="space-y-2">
+                @for (app of service()!.applications; track app) {
+                  <li class="flex items-center gap-3 text-aes-muted text-sm">
+                    <span class="w-2 h-2 rounded-full bg-aes-yellow flex-shrink-0"></span>
+                    {{ app }}
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+
+          <!-- Contact CTA -->
+          <div class="card bg-gradient-to-br from-aes-yellow/10 to-transparent border-aes-yellow/30">
+            <h3 class="font-heading font-bold text-white mb-2">Request Service</h3>
+            <p class="text-aes-muted text-sm mb-4">Contact our experts for a customized quote.</p>
+            <a href="/contact" class="btn-primary w-full justify-center">📞 Get Quote</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+}

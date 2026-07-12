@@ -1,0 +1,105 @@
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="font-heading text-2xl font-bold text-white">Industry Management</h1>
+      <p class="text-aes-muted text-sm">Add and organize industrial sectors AES serves (Aerospace, Defense, Oil & Gas, etc.).</p>
+    </div>
+    <button (click)="openCreateModal()" class="btn-primary btn-sm">
+      <span>➕</span> Add Industry
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="flex justify-center py-12"><div class="spinner"></div></div>
+  } @else if (industries().length === 0) {
+    <div class="card text-center py-12 text-aes-muted">
+      <p class="text-lg mb-2">No industries found</p>
+      <button (click)="openCreateModal()" class="btn-outline btn-sm">Add First Industry</button>
+    </div>
+  } @else {
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      @for (ind of industries(); track ind._id) {
+        <div class="card p-4 text-center group hover:border-aes-yellow/30 flex flex-col justify-between items-center min-h-[160px]">
+          <div>
+            <span class="text-4xl block mb-2">{{ ind.icon || '🏭' }}</span>
+            <h3 class="font-heading text-white font-semibold text-sm truncate max-w-full">{{ ind.name }}</h3>
+            <span class="text-[10px] text-aes-muted block mt-1">Order: {{ ind.order }}</span>
+          </div>
+          <div class="flex items-center gap-1 mt-3 w-full border-t border-aes-border/50 pt-2 justify-center">
+            <button (click)="openEditModal(ind)" class="text-aes-yellow hover:text-white text-xs px-2 py-0.5" title="Edit">✏️</button>
+            <span class="text-aes-border">|</span>
+            <button (click)="deleteIndustry(ind._id)" class="text-red-400 hover:text-white text-xs px-2 py-0.5" title="Delete">🗑️</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Modal -->
+  @if (showModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" (click)="closeModal()">
+      <div class="card w-full max-w-md bg-aes-card/95 border border-aes-border shadow-aes scale-in" (click)="$event.stopPropagation()">
+        <div class="flex items-center justify-between border-b border-aes-border pb-4 mb-6">
+          <h2 class="font-heading text-xl font-bold text-white">
+            {{ isEditMode() ? 'Edit Industry' : 'Add Industry' }}
+          </h2>
+          <button (click)="closeModal()" class="text-aes-muted hover:text-white text-xl">✕</button>
+        </div>
+
+        <form [formGroup]="industryForm" (ngSubmit)="onSubmit()" class="space-y-4">
+          <div>
+            <label class="form-label">Industry Name *</label>
+            <input id="industry-name" type="text" formControlName="name" class="form-input" placeholder="e.g. Aerospace" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">Emoji Icon</label>
+              <input id="industry-icon" type="text" formControlName="icon" class="form-input" placeholder="e.g. ✈️" />
+            </div>
+            <div>
+              <label class="form-label">Display Order</label>
+              <input id="industry-order" type="number" formControlName="order" class="form-input" placeholder="0" />
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">Description</label>
+            <textarea id="industry-desc" formControlName="description" class="form-input" rows="2" placeholder="Sector summary..."></textarea>
+          </div>
+
+          <div>
+            <label class="form-label">Status *</label>
+            <select id="industry-status" formControlName="status" class="form-input">
+              <option value="ACTIVE">Active</option>
+              <option value="INACTIVE">Inactive</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label">Industry Banner/Image</label>
+            <input id="industry-img" type="file" (change)="onFileChange($event)" class="form-input text-xs" accept="image/*" />
+            @if (imagePreview()) {
+              <img [src]="imagePreview()" class="h-20 object-contain rounded mt-2 border border-aes-border" alt="Industry Preview" />
+            }
+          </div>
+
+          <button
+            id="industry-submit-btn"
+            type="submit"
+            [disabled]="submitting() || industryForm.invalid"
+            class="btn-primary w-full justify-center"
+            [ngClass]="(submitting() || industryForm.invalid) ? 'opacity-60' : ''"
+          >
+            @if (submitting()) {
+              <span class="w-4 h-4 border-2 border-aes-navy/50 border-t-aes-navy rounded-full animate-spin"></span>
+              <span>Saving...</span>
+            } @else {
+              <span>💾</span> <span>Save Industry</span>
+            }
+          </button>
+        </form>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,189 @@
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="font-heading text-2xl font-bold text-white">Training Course Management</h1>
+      <p class="text-aes-muted text-sm">Create and schedule professional NDT certification training courses.</p>
+    </div>
+    <button (click)="openCreateModal()" class="btn-primary btn-sm">
+      <span>➕</span> Add Course
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="flex justify-center py-12"><div class="spinner"></div></div>
+  } @else if (trainings().length === 0) {
+    <div class="card text-center py-12 text-aes-muted">
+      <p class="text-lg mb-2">No courses scheduled</p>
+      <button (click)="openCreateModal()" class="btn-outline btn-sm">Add First Course</button>
+    </div>
+  } @else {
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (course of trainings(); track course._id) {
+        <div class="card p-0 overflow-hidden flex flex-col group border-aes-border hover:border-aes-yellow/30 transition-all">
+          <div class="relative h-40 bg-aes-navy overflow-hidden">
+            @if (course.imageUrl) {
+              <img [src]="course.imageUrl" [alt]="course.name" class="w-full h-full object-cover" />
+            } @else {
+              <div class="w-full h-full flex items-center justify-center text-4xl bg-aes-surface text-aes-yellow">🎓</div>
+            }
+            <div class="absolute inset-0 bg-black/40"></div>
+            <span
+              class="absolute top-3 right-3 text-xs font-semibold px-2 py-0.5 rounded-full"
+              [ngClass]="{
+                'badge-approved': course.status === 'PUBLISHED',
+                'badge-pending': course.status === 'DRAFT',
+                'badge-rejected': course.status === 'ARCHIVED'
+              }"
+            >
+              {{ course.status }}
+            </span>
+            <span class="absolute bottom-3 left-3 bg-aes-navy/80 text-white border border-aes-border px-2 py-0.5 rounded text-xs font-semibold">
+              {{ course.mode }}
+            </span>
+          </div>
+          <div class="p-5 flex-1 flex flex-col justify-between gap-4">
+            <div>
+              <h3 class="font-heading font-bold text-white text-base leading-tight truncate">{{ course.name }}</h3>
+              <div class="flex items-center gap-4 text-xs text-aes-yellow font-semibold mt-1">
+                <span>⏱️ {{ course.duration }}</span>
+                <span>💰 {{ course.fees | currency:'INR':'symbol':'1.0-0' }}</span>
+              </div>
+              @if (course.startDate) {
+                <p class="text-aes-muted text-xs mt-2">Starts: {{ course.startDate | date:'dd MMM yyyy' }}</p>
+              }
+              <p class="text-aes-muted text-xs line-clamp-2 mt-2 leading-relaxed">{{ course.description }}</p>
+            </div>
+            <div class="flex items-center gap-2 pt-2 border-t border-aes-border/50">
+              <button (click)="openEditModal(course)" class="btn-outline btn-sm py-1.5 flex-1 justify-center text-xs">
+                ✏️ Edit
+              </button>
+              <button (click)="toggleStatus(course)" class="btn-secondary btn-sm py-1.5 flex-1 justify-center text-xs">
+                📢 Toggle Publish
+              </button>
+              <button (click)="deleteCourse(course._id)" class="btn-danger btn-sm py-1.5 px-3 justify-center text-xs">
+                🗑️
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Modal -->
+  @if (showModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" (click)="closeModal()">
+      <div class="card w-full max-w-2xl bg-aes-card/95 border border-aes-border shadow-aes scale-in max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
+        <div class="flex items-center justify-between border-b border-aes-border pb-4 mb-6">
+          <h2 class="font-heading text-xl font-bold text-white">
+            {{ isEditMode() ? 'Edit Course' : 'Create Course' }}
+          </h2>
+          <button (click)="closeModal()" class="text-aes-muted hover:text-white text-xl">✕</button>
+        </div>
+
+        <form [formGroup]="courseForm" (ngSubmit)="onSubmit()" class="space-y-4">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">Course Name *</label>
+              <input id="course-name" type="text" formControlName="name" class="form-input" placeholder="e.g. ASNT Level II NDT training" />
+            </div>
+            <div>
+              <label class="form-label">Duration *</label>
+              <input id="course-dur" type="text" formControlName="duration" class="form-input" placeholder="e.g. 15 Days" />
+            </div>
+          </div>
+
+          <div class="grid sm:grid-cols-3 gap-4">
+            <div>
+              <label class="form-label">Course Fee (INR) *</label>
+              <input id="course-fee" type="number" formControlName="fees" class="form-input" placeholder="e.g. 15000" />
+            </div>
+            <div>
+              <label class="form-label">Start Date</label>
+              <input id="course-start" type="date" formControlName="startDate" class="form-input" />
+            </div>
+            <div>
+              <label class="form-label">Training Mode *</label>
+              <select id="course-mode" formControlName="mode" class="form-input">
+                <option value="OFFLINE">Offline Classroom</option>
+                <option value="ONLINE">Online Webinar</option>
+                <option value="HYBRID">Hybrid</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">Trainer / Instructor Name *</label>
+              <input id="course-trainer" type="text" formControlName="trainerName" class="form-input" placeholder="Instructor name" />
+            </div>
+            <div>
+              <label class="form-label">Max Students Limit</label>
+              <input id="course-max" type="number" formControlName="maxStudents" class="form-input" placeholder="e.g. 30" />
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">Description *</label>
+            <textarea id="course-desc" formControlName="description" class="form-input" rows="3" placeholder="Full course scope..."></textarea>
+          </div>
+
+          <!-- Syllabus List -->
+          <div class="card p-4">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-heading text-sm font-bold text-white">Syllabus Chapters / Outlines</h3>
+              <button type="button" (click)="addSyllabusItem()" class="btn-outline btn-sm py-1 px-2 text-xs">
+                ➕ Add Chapter
+              </button>
+            </div>
+            <div class="space-y-2">
+              @for (chap of syllabusItems(); track $index; let i = $index) {
+                <div class="flex items-center gap-2">
+                  <input
+                    type="text"
+                    [value]="chap"
+                    (input)="updateSyllabusItem(i, $event)"
+                    class="form-input py-1.5 text-xs"
+                    placeholder="Chapter scope..."
+                  />
+                  <button
+                    type="button"
+                    (click)="removeSyllabusItem(i)"
+                    class="btn-danger btn-sm py-1.5 px-3"
+                    aria-label="Remove syllabus point"
+                  >🗑️</button>
+                </div>
+              }
+              @if (syllabusItems().length === 0) {
+                <p class="text-aes-muted text-[11px]">No syllabus details added yet.</p>
+              }
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">Course Image</label>
+            <input id="course-img" type="file" (change)="onFileChange($event)" class="form-input text-xs" accept="image/*" />
+            @if (imagePreview()) {
+              <img [src]="imagePreview()" class="h-20 object-contain rounded mt-2 border border-aes-border" alt="Preview" />
+            }
+          </div>
+
+          <button
+            id="course-submit-btn"
+            type="submit"
+            [disabled]="submitting() || courseForm.invalid"
+            class="btn-primary w-full justify-center"
+            [ngClass]="(submitting() || courseForm.invalid) ? 'opacity-60' : ''"
+          >
+            @if (submitting()) {
+              <span class="w-4 h-4 border-2 border-aes-navy/50 border-t-aes-navy rounded-full animate-spin"></span>
+              <span>Saving...</span>
+            } @else {
+              <span>💾</span> <span>Save Course</span>
+            }
+          </button>
+        </form>
+      </div>
+    </div>
+  }
+</div>

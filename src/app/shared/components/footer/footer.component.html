@@ -1,0 +1,96 @@
+<footer class="bg-aes-navy border-t border-aes-border">
+  <!-- Main Footer -->
+  <div class="container-custom py-12 lg:py-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <!-- Brand -->
+      <div class="lg:col-span-1">
+        <div class="mb-6">
+          <a routerLink="/" class="inline-block group">
+            <img src="companylogo.png" alt="AES Logo"
+              class="h-16 w-auto object-contain transition-all duration-300 ease-in-out group-hover:scale-105" />
+          </a>
+        </div>
+        <p class="text-aes-muted text-sm leading-relaxed mb-4">
+          Professional NDT Inspection, Training & Engineering Solutions serving aerospace, oil & gas, marine, power, and
+          infrastructure industries.
+        </p>
+        <div class="flex gap-3">
+          @for (cert of certifications; track cert) {
+          <span
+            class="px-2 py-1 text-xs font-medium border border-aes-yellow/30 text-aes-yellow rounded bg-aes-yellow/5">{{
+            cert }}</span>
+          }
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h3 class="font-heading font-semibold text-white mb-4">Quick Links</h3>
+        <ul class="space-y-2">
+          @for (link of quickLinks; track link.path) {
+          <li>
+            <a [routerLink]="link.path"
+              class="text-aes-muted text-sm hover:text-aes-yellow transition-colors flex items-center gap-2">
+              <span class="text-aes-yellow text-xs">›</span>
+              {{ link.label }}
+            </a>
+          </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Services -->
+      <div>
+        <h3 class="font-heading font-semibold text-white mb-4">Our Services</h3>
+        <ul class="space-y-2">
+          @for (service of services; track service) {
+          <li class="text-aes-muted text-sm flex items-center gap-2">
+            <span class="text-aes-yellow text-xs">›</span>
+            {{ service }}
+          </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h3 class="font-heading font-semibold text-white mb-4">Contact Us</h3>
+        <ul class="space-y-4">
+          <li class="flex items-start gap-3">
+            <span class="text-aes-yellow mt-0.5 flex-shrink-0">📍</span>
+            <div>
+              <p class="text-white text-sm font-medium">Head Office</p>
+              <p class="text-aes-muted text-sm">Gudia Pokhari, Pipili<br>Odisha, India</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-aes-yellow mt-0.5 flex-shrink-0">📍</span>
+            <div>
+              <p class="text-white text-sm font-medium">Branch Office</p>
+              <p class="text-aes-muted text-sm">Gandhinagar<br>Gujarat, India</p>
+            </div>
+          </li>
+          <li class="flex items-center gap-3">
+            <span class="text-aes-yellow flex-shrink-0">📧</span>
+            <a href="mailto:info@aes.com"
+              class="text-aes-muted text-sm hover:text-aes-yellow transition-colors">info&#64;aes.com</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="border-t border-aes-border">
+    <div class="container-custom py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p class="text-aes-muted text-sm">
+        © {{ currentYear }} Abinash Engineering Services. All rights reserved.
+      </p>
+      <div class="flex items-center gap-4">
+        <a routerLink="/admin/login" class="text-aes-muted text-xs hover:text-aes-yellow transition-colors">Admin</a>
+        <span class="text-aes-border">|</span>
+        <span class="text-aes-muted text-xs">ASNT Level III Certified</span>
+      </div>
+    </div>
+  </div>
+</footer>

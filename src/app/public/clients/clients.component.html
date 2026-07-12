@@ -1,0 +1,82 @@
+<!-- Page Header -->
+<section class="relative py-20 overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-br from-aes-navy via-aes-surface to-aes-navy"></div>
+  <div class="absolute inset-0 bg-grid opacity-30"></div>
+  <div class="container-custom relative z-10 text-center">
+    <span class="section-tag">Partnership</span>
+    <h1 class="font-heading text-4xl lg:text-5xl font-bold text-white mb-4">Our Valued Clients</h1>
+    <p class="text-aes-muted text-lg max-w-2xl mx-auto">
+      We take pride in serving some of India's leading organizations, defence forces, and public sector undertakings.
+    </p>
+  </div>
+</section>
+
+<!-- Clients Grid -->
+<section class="section-padding">
+  <div class="container-custom">
+    @if (loading()) {
+      <div class="flex justify-center py-16">
+        <div class="spinner"></div>
+      </div>
+    } @else if (clients().length === 0) {
+      <div class="text-center py-16 text-aes-muted">
+        <div class="text-5xl mb-4">🏢</div>
+        <p class="text-lg">No clients found.</p>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        @for (client of clients(); track client._id) {
+          <div class="card flex flex-col items-center justify-between text-center group hover:border-aes-yellow/50 transition-all p-8 min-h-[220px]">
+            <!-- Client logo or text -->
+            <div class="w-full flex-1 flex items-center justify-center mb-6">
+              @if (client.logoUrl) {
+                <img
+                  [src]="client.logoUrl"
+                  [alt]="client.name"
+                  class="max-h-16 max-w-full object-contain transition-all group-hover:scale-105 duration-300"
+                  loading="lazy"
+                />
+              } @else {
+                <div class="w-16 h-16 rounded-2xl bg-aes-blue/30 border border-aes-border flex items-center justify-center text-3xl text-aes-yellow group-hover:scale-105 transition-transform mb-2">
+                  🏢
+                </div>
+              }
+            </div>
+
+            <div>
+              <h3 class="font-heading font-bold text-white text-base mb-1 group-hover:text-aes-yellow transition-colors">
+                {{ client.name }}
+              </h3>
+              @if (client.description) {
+                <p class="text-aes-muted text-xs leading-relaxed line-clamp-2">
+                  {{ client.description }}
+                </p>
+              }
+              @if (client.website) {
+                <a
+                  [href]="client.website"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-block mt-3 text-aes-yellow hover:text-aes-yellow-light text-xs font-semibold"
+                >
+                  Visit Website ↗
+                </a>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<!-- Support CTA -->
+<section class="section-padding bg-aes-surface">
+  <div class="container-custom text-center">
+    <h2 class="font-heading text-3xl font-bold text-white mb-4">Become Our Partner</h2>
+    <p class="text-aes-muted text-lg max-w-xl mx-auto mb-8">
+      Get in touch with us to design customized NDT inspection contracts or corporate training packages.
+    </p>
+    <a href="/contact" class="btn-primary">📩 Contact Our Sales Team</a>
+  </div>
+</section>

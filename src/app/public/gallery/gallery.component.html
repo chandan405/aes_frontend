@@ -1,0 +1,125 @@
+<!-- Page Header -->
+<section class="relative py-20 overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-br from-aes-navy via-aes-surface to-aes-navy"></div>
+  <div class="absolute inset-0 bg-grid opacity-30"></div>
+  <div class="container-custom relative z-10 text-center">
+    <span class="section-tag">Showcase</span>
+    <h1 class="font-heading text-4xl lg:text-5xl font-bold text-white mb-4">Project Gallery</h1>
+    <p class="text-aes-muted text-lg max-w-2xl mx-auto">
+      Explore our NDT inspections, site testing, training activities, workshops, and certified equipments.
+    </p>
+  </div>
+</section>
+
+<!-- Gallery Content -->
+<section class="section-padding">
+  <div class="container-custom">
+    <!-- Filter Tabs -->
+    <div class="flex flex-wrap justify-center gap-2 mb-10">
+      @for (cat of filters; track cat.value) {
+        <button
+          (click)="activeFilter.set(cat.value)"
+          class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer"
+          [ngClass]="activeFilter() === cat.value
+            ? 'bg-aes-yellow text-aes-navy shadow-aes-glow'
+            : 'bg-aes-card text-aes-muted hover:text-white border-aes-border'"
+        >
+          {{ cat.label }}
+        </button>
+      }
+    </div>
+
+    @if (loading()) {
+      <div class="flex justify-center py-16">
+        <div class="spinner"></div>
+      </div>
+    } @else if (filteredImages().length === 0) {
+      <div class="text-center py-16 text-aes-muted">
+        <div class="text-5xl mb-4">🖼️</div>
+        <p class="text-lg">No gallery images found in this category.</p>
+      </div>
+    } @else {
+      <!-- Masonry Grid Layout -->
+      <div class="masonry-grid">
+        @for (img of filteredImages(); track img._id; let idx = $index) {
+          <div
+            class="masonry-item card p-0 overflow-hidden group border-aes-border hover:border-aes-yellow/40 transition-all cursor-pointer relative"
+            (click)="openLightbox(idx)"
+          >
+            <!-- Image Container with Zoom effect -->
+            <div class="relative overflow-hidden aspect-[4/3] sm:aspect-auto">
+              <img
+                [src]="img.imageUrl"
+                [alt]="img.altText || img.title"
+                class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+              />
+              <!-- Hover Overlay -->
+              <div class="absolute inset-0 bg-gradient-to-t from-aes-navy/90 via-aes-navy/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
+                <span class="px-2 py-0.5 self-start text-[10px] uppercase font-semibold tracking-wider bg-aes-yellow text-aes-navy rounded mb-2">
+                  {{ img.category }}
+                </span>
+                <h3 class="font-heading font-bold text-white text-base leading-tight">{{ img.title }}</h3>
+                @if (img.description) {
+                  <p class="text-aes-muted text-xs mt-1 line-clamp-2">{{ img.description }}</p>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<!-- Lightbox Modal -->
+@if (lightboxOpen()) {
+  <div class="lightbox-overlay" (click)="closeLightbox()">
+    <!-- Close Button -->
+    <button
+      (click)="closeLightbox()"
+      class="absolute top-4 right-4 text-white text-3xl font-bold bg-white/10 w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors z-50 cursor-pointer"
+      aria-label="Close image preview"
+    >✕</button>
+
+    <!-- Previous Button -->
+    <button
+      (click)="prevImage($event)"
+      class="absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl bg-white/10 w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors z-50 cursor-pointer"
+      aria-label="Previous image"
+    >‹</button>
+
+    <!-- Image and Info -->
+    <div class="max-w-4xl w-full px-4 flex flex-col items-center gap-4" (click)="$event.stopPropagation()">
+      <div class="relative max-h-[75vh] w-full flex items-center justify-center bg-aes-navy/50 rounded-2xl overflow-hidden p-2 border border-aes-border">
+        <img
+          [src]="currentLightboxImage()?.imageUrl"
+          [alt]="currentLightboxImage()?.altText || currentLightboxImage()?.title"
+          class="max-h-[70vh] max-w-full object-contain rounded-xl shadow-2xl"
+        />
+      </div>
+      <div class="w-full text-center sm:text-left bg-aes-card/85 backdrop-blur-md border border-aes-border p-5 rounded-2xl">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+          <h2 class="font-heading text-lg font-bold text-white leading-tight">
+            {{ currentLightboxImage()?.title }}
+          </h2>
+          <span class="px-3 py-1 bg-aes-yellow/10 border border-aes-yellow/30 text-aes-yellow text-xs font-semibold rounded-full self-center sm:self-auto">
+            {{ currentLightboxImage()?.category }}
+          </span>
+        </div>
+        @if (currentLightboxImage()?.description) {
+          <p class="text-aes-muted text-sm leading-relaxed">
+            {{ currentLightboxImage()?.description }}
+          </p>
+        }
+      </div>
+    </div>
+
+    <!-- Next Button -->
+    <button
+      (click)="nextImage($event)"
+      class="absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl bg-white/10 w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors z-50 cursor-pointer"
+      aria-label="Next image"
+    >›</button>
+  </div>
+}

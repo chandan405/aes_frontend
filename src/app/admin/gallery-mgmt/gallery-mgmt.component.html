@@ -1,0 +1,159 @@
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="font-heading text-2xl font-bold text-white">Gallery Image Management</h1>
+      <p class="text-aes-muted text-sm">Upload, tag, and publish NDT work site and training event photos.</p>
+    </div>
+    <button (click)="openCreateModal()" class="btn-primary btn-sm">
+      <span>➕</span> Upload Image
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex flex-wrap gap-2">
+    @for (cat of filters; track cat.value) {
+      <button
+        (click)="activeFilter.set(cat.value); loadGallery()"
+        class="px-4 py-2 text-xs font-semibold rounded-xl border transition-all cursor-pointer"
+        [ngClass]="activeFilter() === cat.value
+          ? 'bg-aes-yellow text-aes-navy border-aes-yellow shadow-aes-glow'
+          : 'bg-aes-card text-aes-muted hover:text-white border-aes-border'"
+      >
+        {{ cat.label }}
+      </button>
+    }
+  </div>
+
+  <!-- Gallery Grid -->
+  @if (loading()) {
+    <div class="flex justify-center py-12"><div class="spinner"></div></div>
+  } @else if (images().length === 0) {
+    <div class="card text-center py-12 text-aes-muted">
+      <p class="text-lg mb-2">No images found</p>
+      <button (click)="openCreateModal()" class="btn-outline btn-sm">Upload First Image</button>
+    </div>
+  } @else {
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      @for (img of images(); track img._id) {
+        <div class="card p-0 overflow-hidden flex flex-col group border-aes-border hover:border-aes-yellow/30 transition-all">
+          <div class="relative aspect-video bg-aes-navy overflow-hidden">
+            <img [src]="img.thumbnailUrl || img.imageUrl" [alt]="img.title" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-black/40"></div>
+            <span
+              class="absolute top-2 right-2 text-[10px] font-semibold px-2 py-0.5 rounded-full"
+              [ngClass]="img.status === 'ACTIVE' ? 'badge-active' : 'badge-inactive'"
+            >
+              {{ img.status }}
+            </span>
+            @if (img.isFeatured) {
+              <span class="absolute top-2 left-2 bg-aes-yellow text-aes-navy border border-aes-yellow text-[9px] px-1.5 py-0.5 rounded font-bold">
+                ★ FEATURED
+              </span>
+            }
+          </div>
+          <div class="p-3 flex-1 flex flex-col justify-between gap-2">
+            <div>
+              <h3 class="font-heading font-bold text-white text-xs truncate">{{ img.title }}</h3>
+              <p class="text-[10px] text-aes-yellow font-medium truncate mt-0.5">{{ img.category }}</p>
+            </div>
+            <div class="flex items-center gap-1 border-t border-aes-border/50 pt-2 justify-center">
+              <button (click)="openEditModal(img)" class="text-aes-yellow hover:text-white text-xs px-2 py-0.5" title="Edit">✏️</button>
+              <span class="text-aes-border">|</span>
+              <button (click)="toggleStatus(img)" class="text-aes-muted hover:text-white text-xs px-2 py-0.5" title="Toggle Status">🔄</button>
+              <span class="text-aes-border">|</span>
+              <button (click)="deleteImage(img._id)" class="text-red-400 hover:text-white text-xs px-2 py-0.5" title="Delete">🗑️</button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Modal -->
+  @if (showModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" (click)="closeModal()">
+      <div class="card w-full max-w-lg bg-aes-card/95 border border-aes-border shadow-aes scale-in max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
+        <div class="flex items-center justify-between border-b border-aes-border pb-4 mb-6">
+          <h2 class="font-heading text-xl font-bold text-white">
+            {{ isEditMode() ? 'Update Image Details' : 'Upload Gallery Image' }}
+          </h2>
+          <button (click)="closeModal()" class="text-aes-muted hover:text-white text-xl">✕</button>
+        </div>
+
+        <form [formGroup]="galleryForm" (ngSubmit)="onSubmit()" class="space-y-4">
+          <div>
+            <label class="form-label">Gallery Title *</label>
+            <input id="gallery-title" type="text" formControlName="title" class="form-input" placeholder="e.g. Pipeline Ultrasonic Testing" />
+          </div>
+
+          <div>
+            <label class="form-label">Category *</label>
+            <select id="gallery-cat" formControlName="category" class="form-input">
+              <option value="NDT Inspection">NDT Inspection</option>
+              <option value="Advanced Testing">Advanced Testing</option>
+              <option value="Civil Testing">Civil Testing</option>
+              <option value="Training Gallery">Training Gallery</option>
+              <option value="Equipment Gallery">Equipment Gallery</option>
+              <option value="Client Projects">Client Projects</option>
+              <option value="Company Events">Company Events</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label">Description</label>
+            <textarea id="gallery-desc" formControlName="description" class="form-input" rows="2" placeholder="AES team performing inspection..."></textarea>
+          </div>
+
+          <div>
+            <label class="form-label">Alternative Text (SEO) *</label>
+            <input id="gallery-alt" type="text" formControlName="altText" class="form-input" placeholder="e.g. Pipeline UT inspection" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">Display Order</label>
+              <input id="gallery-order" type="number" formControlName="displayOrder" class="form-input" placeholder="0" />
+            </div>
+            <div>
+              <label class="form-label">Status *</label>
+              <select id="gallery-status" formControlName="status" class="form-input">
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 py-2">
+            <input id="gallery-feat" type="checkbox" formControlName="isFeatured" class="w-4 h-4 accent-aes-yellow" />
+            <label for="gallery-feat" class="text-sm font-semibold text-white cursor-pointer select-none">
+              Set as Homepage Featured Image
+            </label>
+          </div>
+
+          <div>
+            <label class="form-label">Select Photo *</label>
+            <input id="gallery-file" type="file" (change)="onFileChange($event)" class="form-input text-xs" accept="image/*" />
+            @if (imagePreview()) {
+              <img [src]="imagePreview()" class="h-28 object-contain rounded mt-2 border border-aes-border" alt="Preview image" />
+            }
+          </div>
+
+          <button
+            id="gallery-submit-btn"
+            type="submit"
+            [disabled]="submitting() || galleryForm.invalid"
+            class="btn-primary w-full justify-center"
+            [ngClass]="(submitting() || galleryForm.invalid) ? 'opacity-60' : ''"
+          >
+            @if (submitting()) {
+              <span class="w-4 h-4 border-2 border-aes-navy/50 border-t-aes-navy rounded-full animate-spin"></span>
+              <span>Uploading Image...</span>
+            } @else {
+              <span>💾</span> <span>Save Image</span>
+            }
+          </button>
+        </form>
+      </div>
+    </div>
+  }
+</div>

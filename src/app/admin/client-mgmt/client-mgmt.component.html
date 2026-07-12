@@ -1,0 +1,111 @@
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="font-heading text-2xl font-bold text-white">Client Management</h1>
+      <p class="text-aes-muted text-sm">Add and organize partner & client logos shown on the site.</p>
+    </div>
+    <button (click)="openCreateModal()" class="btn-primary btn-sm">
+      <span>➕</span> Add Client
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="flex justify-center py-12"><div class="spinner"></div></div>
+  } @else if (clients().length === 0) {
+    <div class="card text-center py-12 text-aes-muted">
+      <p class="text-lg mb-2">No clients found</p>
+      <button (click)="openCreateModal()" class="btn-outline btn-sm">Add First Client</button>
+    </div>
+  } @else {
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      @for (client of clients(); track client._id) {
+        <div class="card p-4 text-center group hover:border-aes-yellow/30 flex flex-col justify-between items-center min-h-[180px]">
+          <div class="w-full flex-1 flex items-center justify-center mb-3">
+            @if (client.logoUrl) {
+              <img [src]="client.logoUrl" [alt]="client.name" class="h-10 max-w-full object-contain transition-all group-hover:scale-105 duration-300" />
+            } @else {
+              <div class="w-12 h-12 bg-aes-navy rounded-lg flex items-center justify-center text-aes-yellow text-xl">🏢</div>
+            }
+          </div>
+          <div>
+            <h3 class="font-heading text-white font-semibold text-xs truncate max-w-full">{{ client.name }}</h3>
+            <span class="text-[10px] text-aes-muted">Order: {{ client.order }}</span>
+          </div>
+          <div class="flex items-center gap-1 mt-3 w-full border-t border-aes-border/50 pt-2 justify-center">
+            <button (click)="openEditModal(client)" class="text-aes-yellow hover:text-white text-xs px-2 py-0.5" title="Edit">✏️</button>
+            <span class="text-aes-border">|</span>
+            <button (click)="deleteClient(client._id)" class="text-red-400 hover:text-white text-xs px-2 py-0.5" title="Delete">🗑️</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Modal -->
+  @if (showModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" (click)="closeModal()">
+      <div class="card w-full max-w-md bg-aes-card/95 border border-aes-border shadow-aes scale-in" (click)="$event.stopPropagation()">
+        <div class="flex items-center justify-between border-b border-aes-border pb-4 mb-6">
+          <h2 class="font-heading text-xl font-bold text-white">
+            {{ isEditMode() ? 'Edit Client' : 'Add Client' }}
+          </h2>
+          <button (click)="closeModal()" class="text-aes-muted hover:text-white text-xl">✕</button>
+        </div>
+
+        <form [formGroup]="clientForm" (ngSubmit)="onSubmit()" class="space-y-4">
+          <div>
+            <label class="form-label">Client Name *</label>
+            <input id="client-name" type="text" formControlName="name" class="form-input" placeholder="e.g. HAL" />
+          </div>
+
+          <div>
+            <label class="form-label">Website URL</label>
+            <input id="client-web" type="text" formControlName="website" class="form-input" placeholder="e.g. https://hal-india.co.in" />
+          </div>
+
+          <div>
+            <label class="form-label">Short Description</label>
+            <textarea id="client-desc" formControlName="description" class="form-input" rows="2" placeholder="e.g. Aerospace manufacturing partner"></textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">Display Order</label>
+              <input id="client-order" type="number" formControlName="order" class="form-input" placeholder="0" />
+            </div>
+            <div>
+              <label class="form-label">Status *</label>
+              <select id="client-status" formControlName="status" class="form-input">
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">Client Logo</label>
+            <input id="client-logo" type="file" (change)="onFileChange($event)" class="form-input text-xs" accept="image/*" />
+            @if (imagePreview()) {
+              <img [src]="imagePreview()" class="h-10 object-contain rounded mt-2 border border-aes-border" alt="Logo preview" />
+            }
+          </div>
+
+          <button
+            id="client-submit-btn"
+            type="submit"
+            [disabled]="submitting() || clientForm.invalid"
+            class="btn-primary w-full justify-center"
+            [ngClass]="(submitting() || clientForm.invalid) ? 'opacity-60' : ''"
+          >
+            @if (submitting()) {
+              <span class="w-4 h-4 border-2 border-aes-navy/50 border-t-aes-navy rounded-full animate-spin"></span>
+              <span>Saving...</span>
+            } @else {
+              <span>💾</span> <span>Save Client</span>
+            }
+          </button>
+        </form>
+      </div>
+    </div>
+  }
+</div>
