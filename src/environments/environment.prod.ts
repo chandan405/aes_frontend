@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://aesbackend-sigma.vercel.app/api',
+  apiUrl: 'https://aes-backend-dto8.onrender.com/api',
 };
