@@ -83,8 +83,13 @@
         <div class="mb-8">
           <span class="section-tag">Enrollment</span>
           <h2 class="section-title">Training Registration</h2>
+          <div class="mt-3 p-4 bg-aes-navy-600/30 border border-aes-border/50 rounded-xl text-sm text-aes-muted">
+            For direct inquiries regarding course batches, syllabus, or certifications, reach out to Surya at: 
+            <a href="mailto:surya.aes.ndtservices&#64;gmail.com" class="text-aes-yellow hover:underline font-medium">surya.aes.ndtservices&#64;gmail.com</a> or call 
+            <a href="tel:+919777854338" class="text-aes-yellow hover:underline font-medium">+91 97778 54338</a>.
+          </div>
           @if (selectedTraining()) {
-            <div class="mt-2 px-4 py-2 bg-aes-yellow/10 border border-aes-yellow/30 rounded-xl">
+            <div class="mt-3 px-4 py-2 bg-aes-yellow/10 border border-aes-yellow/30 rounded-xl">
               <p class="text-aes-yellow font-medium text-sm">Selected: {{ selectedTraining()!.name }}</p>
             </div>
           }

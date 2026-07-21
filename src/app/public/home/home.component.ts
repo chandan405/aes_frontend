@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, signal, inject, ElementRef, AfterViewInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { NgClass, NgStyle } from '@angular/common';
+import { Component, OnInit, OnDestroy, signal, inject, ElementRef, AfterViewInit, PLATFORM_ID } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { NgClass, NgStyle, isPlatformBrowser } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
 import { Banner, Service, GalleryImage, Client } from '../../core/models/api.models';
 
@@ -11,6 +11,9 @@ import { Banner, Service, GalleryImage, Client } from '../../core/models/api.mod
 })
 export class HomeComponent implements OnInit, OnDestroy {
   private api = inject(ApiService);
+  private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   banners = signal<Banner[]>([]);
   services = signal<Service[]>([]);
@@ -81,9 +84,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private startSlider(): void {
-    this.sliderInterval = setInterval(() => {
-      if (this.banners().length > 1) this.nextSlide();
-    }, 5000);
+    if (this.isBrowser) {
+      this.sliderInterval = setInterval(() => {
+        if (this.banners().length > 1) this.nextSlide();
+      }, 5000);
+    }
   }
 
   nextSlide(): void {
@@ -101,7 +106,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   openGallery(): void {
-    window.location.href = '/gallery';
+    this.router.navigate(['/gallery']);
   }
 
   getServiceIcon(name: string): string {

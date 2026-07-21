@@ -25,7 +25,9 @@ export class NavbarComponent {
 
   @HostListener('window:scroll')
   onScroll(): void {
-    this.scrolled.set(window.scrollY > 50);
+    if (typeof window !== 'undefined') {
+      this.scrolled.set(window.scrollY > 50);
+    }
   }
 
   toggleMenu(): void {

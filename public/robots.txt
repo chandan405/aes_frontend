@@ -1,0 +1,19 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+
+# Allow crawling of public website pages
+Allow: /
+Allow: /about
+Allow: /services
+Allow: /services/*
+Allow: /training
+Allow: /gallery
+Allow: /clients
+Allow: /contact
+
+# Disallow crawling of admin panel
+Disallow: /admin
+Disallow: /admin/*
+
+# Sitemap URL
+Sitemap: https://abinashndt.com/sitemap.xml
