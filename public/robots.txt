@@ -16,4 +16,4 @@ Disallow: /admin
 Disallow: /admin/*
 
 # Sitemap URL
-Sitemap: https://abinashndt.com/sitemap.xml
+Sitemap: https://www.aesndt.in/sitemap.xml
